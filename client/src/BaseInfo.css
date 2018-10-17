@@ -1,0 +1,96 @@
+/*BaseInfo*/
+.card {
+	display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.base-info {
+	width: 500px;
+	height: 250px;
+	padding-right: 0;
+	display: flex;
+	flex-direction: column;
+}
+.card-base {
+	display: flex;
+	flex-direction: row;
+}
+.user-icon {
+	width: 170px;
+	height: 170px;
+	margin-top: 10px;
+}
+.baseInfo {
+	margin-top: 10px;
+}
+.my-name {
+	margin-left: 30px;
+	margin-top: 20px;
+}
+.detail-button {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+.detail {
+	display: flex;
+	flex-direction: row;
+}
+.detail-item {
+	display: flex;
+	flex: 1;
+}
+.card-logo {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: center;
+}
+.logo-facebook {
+	width: 50px;
+	height: 50px;
+	margin-bottom: 20px;
+}
+.logo-github {
+	width: 35px;
+	height: 35px;
+}
+@media screen and (max-width: 600px) {
+.card {
+	margin-left: 50px;
+}
+.base-info {
+	width: 270px;
+	height: 400px;
+	align-items: center;
+}
+.card-base {
+	flex-direction: column;	
+	align-items: center;
+}
+.university {
+	margin-right: 80px;
+}
+.my-name {
+	margin-left: 0;
+}
+.access {
+	justify-content: flex-end;
+}}
+@media screen and (max-width: 375px) {
+.card {
+	flex-direction: column;
+}		
+.card-logo {
+	flex-direction: row;
+	margin-left: 180px;
+	height: 50px;
+}
+.logo-facebook {
+	margin-top: 23px;
+}}
+@media screen and (max-width: 320px) {
+.card {
+	margin-left: 20px;
+}}
