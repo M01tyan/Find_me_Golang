@@ -59,8 +59,8 @@ export default class About extends Component {
 
 class AppealItem extends Component {
   render() {
-  var lines = this.props.title.split("<br/>").map(function(line) {
-            return (<h1 className="appeal-item-title">{line}</h1>);
+  var lines = this.props.title.split("<br/>").map(function(line, i) {
+            return (<h1 className="appeal-item-title" key={i}>{line}</h1>);
         });
     return (
       <div className="appeal-item">
@@ -99,8 +99,8 @@ class AboutTemplate extends Component {
         color: "#fff"
       }
     }
-    var lines = this.props.about.split("<br/>").map(function(line) {
-            return (<p className="template-about" style={white_fontColor}>{line}</p>);
+    var lines = this.props.about.split("<br/>").map(function(line, i) {
+            return (<p className="template-about" style={white_fontColor} key={i}>{line}</p>);
         });
     return (
       <div className="template" style={white_background} ref="template">

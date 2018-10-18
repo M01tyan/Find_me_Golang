@@ -1,34 +1,54 @@
+/*TodoCardItems*/
+.todo-card-items {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.title {
+  color: #fff;
+}
+.todo-card-items-item {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
 /*TodoCard*/
 .todo-card {
   display: flex;
   flex-direction: row;
   justify-content: center;
+  margin: 10px;
 }
-.t-card {
+.todo-card-card {
   max-width: 400px;
   flex-direction: column;
 }
-.media {
+div.todo-card-media {
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
   overflow: hidden;
 }
-.gridList {
+ul.todo-card-media-gridList {
   flex-wrap: nowrap;
   transform: translateZ(0);
 }
-.actions {
+.todo-card-actions {
   display: flex;
   justify-content: space-between;
 }
-.MuiFormControlLabel-root-140 {
+label.MuiFormControlLabel-root-145 {
   margin-right: -5px;
   margin-left: 0px;
   margin-top: 0px;
 }
-.develop-tech {
+.todo-card-tech {
   display: flex;
   flex-direction: row;
-  justify-content: space-around;
+  flex-wrap: wrap;
+}
+.todo-card-tech-item {
+  margin-right: 30px;
 }
