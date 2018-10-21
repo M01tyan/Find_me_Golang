@@ -9,15 +9,8 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 import Typography from '@material-ui/core/Typography'
 import Fade from '@material-ui/core/Fade'
 import Avatar from '@material-ui/core/Avatar'
-import MenuList from '@material-ui/core/MenuList'
-import ListItemIcon from '@material-ui/core/ListItemIcon'
-import ListItemText from '@material-ui/core/ListItemText'
 import sr from './ScrollReveal'
 import Icon from './images/icon.jpg'
-import Facebook from './images/facebook_logo.png'
-import Github from './images/github_logo.png'
-import Twitter from './images/twitter_logo.png'
-import Other from './images/other_site.png'
 import './BaseInfo.css'
 
 export default class BaseInfo extends Component {
@@ -40,17 +33,14 @@ export default class BaseInfo extends Component {
       links: [
         {
           title: 'Facebook',
-          image: Facebook,
           link: 'https://www.facebook.com/M01tyan',
         },
         {
           title: 'Github',
-          image: Github,
           link: 'https://github.com/M01tyan'
         },
         {
           title: 'Find me!',
-          image: Other,
           link: 'https://find-me-site.herokuapp.com/'
         },
       ],
@@ -117,18 +107,9 @@ export default class BaseInfo extends Component {
                 onClose={this.handleClose}
                 TransitionComponent={Fade}
               >
-                <MenuList>
-                  {this.state.links.map((link, i) => (
-                    <a href={link.link} key={i}>
-                      <MenuItem>
-                        <ListItemIcon>
-                          <img src={link.image} alt={link.title} className="base-info-links-logo" />
-                        </ListItemIcon>
-                        <ListItemText inset primary={link.title} />
-                      </MenuItem>
-                    </a>
-                  ))}
-                </MenuList>
+                {this.state.links.map((link, i) => (
+                  <MenuItem onClick={this.handleClose} key={i}><a href={link.link}>{link.title}</a></MenuItem>
+                ))}
               </Menu>
             </CardActions>
           </div>

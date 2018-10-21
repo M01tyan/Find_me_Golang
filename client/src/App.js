@@ -10,6 +10,9 @@ import './App.css'
 import About from './About'
 import BaseInfo from './BaseInfo'
 import TodoCard from './TodoCard'
+import Skill from './Skill'
+import History from './History'
+import Career from './Career'
 
 export default class App extends Component {
   render() {
@@ -31,7 +34,10 @@ class Home extends Component {
     return (
       <div className="container">
         <BaseInfo name="前田 幹太" furigana="Kanta Maeda" university="会津大学" department="コンピュータ理工学部" subject="コンピュータ理工学科" age="20" graduate_year="2020" email="s1240236@u-aizu.ac.jp" tel="080-2725-8866" key="baseInfo" />
-        <TodoCard key="todoCard" />
+        <TodoCard key="todoCards" />
+        <Skill />
+        <History />
+        <Career />
       </div>
     )
   }

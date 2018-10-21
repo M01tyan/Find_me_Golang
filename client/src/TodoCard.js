@@ -62,6 +62,22 @@ export default class TodoCardItems extends Component {
           member: "TIS株式会社、会津大学4名",
           favorite: 0,
         },
+        {
+          title: "TechMate ~LINE Bot~",
+          links: [
+            {
+              title: "Github",
+              url: "https://github.com/M01tyan/TechMate/",
+            },
+          ],
+          images: [Aizulogo, Monaca, Nifty, Onsen, Js],
+          detail: "大学内で同じ技術を学びたいと思う仲間を繋げる手助けをするLINE Bot。",
+          motivation: "大学のハッカソンに参加し、普段個人での開発ばかりで大学内にはどんな技術を学んでいる人がいるのかわからず、同じ技術を学びたいと思っていたり、仲間が欲しいと思う人のきっかけづくりを作ってあげたいと思い作成しました。",
+          technologies: ["LINE Messaging API", "Go言語", "PostgreSQL", "Heroku"],
+          period: "4日間",
+          member: "３人",
+          favorite: 0,
+        },
       ],
     }
   }
@@ -72,7 +88,7 @@ export default class TodoCardItems extends Component {
         <h2 className="title">これまでの制作物</h2>
         <div className="todo-card-items-item">
           {this.state.items.map((item, i) => (
-            <TodoCard item={item} key={i} />
+            <TodoCard item={item} key={item.title} />
           ))}
         </div>
       </div>
@@ -135,7 +151,7 @@ class TodoCard extends Component {
                   TransitionComponent={Fade}
                 >
                   {this.state.item.links.map((link, i) => (
-                    <MenuItem onClick={this.handleClose}><a href={link.url} key={i}>{link.url}</a></MenuItem>
+                    <MenuItem onClick={this.handleClose} key={i}><a href={link.url}>{link.title}</a></MenuItem>
                   ))}
                 </Menu>
               </div>
@@ -145,9 +161,9 @@ class TodoCard extends Component {
           />
           <div className="todo-card-media">
             <GridList cols={1.0} className="todo-card-media-gridList">
-              {this.state.item.images.map(image => (
+              {this.state.item.images.map((image, i) => (
                 <GridListTile key={image}>
-                  <img src={image} alt="image" />
+                  <img src={image} alt={i} />
                 </GridListTile>
               ))}
             </GridList>
@@ -175,21 +191,21 @@ class TodoCard extends Component {
               <ExpandMoreIcon />
             </IconButton>
           </CardActions>
-          <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
+          <Collapse in={this.state.expanded} timeout="auto" unmountOnExit disableRipple>
             <CardContent>
               <h2 paragraph>タイトル</h2>
               <Typography paragraph>
                 {this.state.item.title}
               </Typography>
-              <h3 paragraph>詳細</h3>
+              <h3 paragraph>動機</h3>
               <Typography paragraph>
-                {this.state.item.detail}
+                {this.state.item.motivation}
               </Typography>
               <h3 paragraph>使用技術</h3>
               <Typography paragraph>
                 <ul className="todo-card-tech">
-                  {this.state.item.technologies.map(tech => (
-                    <li className="todo-card-tech-item">tech</li>
+                  {this.state.item.technologies.map((tech, i) => (
+                    <li className="todo-card-tech-item" key={i}>{tech}</li>
                   ))}
                 </ul>
               </Typography>

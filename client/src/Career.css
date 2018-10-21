@@ -1,0 +1,8 @@
+div.cardHeader {
+  background-color: #eeeeee;
+}
+.cardPricing {
+  display: flex;
+  justify-content: center;
+  align-items: base-line;
+}

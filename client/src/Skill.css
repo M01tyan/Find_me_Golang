@@ -1,0 +1,85 @@
+.skill {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+.skill-items {
+  width: 100%;
+  flex: 1;
+}
+.skill-item {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+  align-items: space-around;
+}
+.skill-item-mobile {
+  display: flex;
+  flex-direction: row;
+  flex: 1;
+}
+.skill-item-lang {
+  color: #fff;
+  display: flex;
+  flex: 1;
+  justify-content: flex-end;
+  margin-top: 0;
+  font-size: 30px;
+}
+.skill-item-star {
+  flex-wrap: nowrap;
+}
+.skill-item-comment {
+  display: flex;
+  color: #fff;
+  flex: 1;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  margin-top: 0;]
+  font-size: 30px;
+}
+@media screen and (max-width: 680px) {
+.skill-item-lang {
+  margin-left: 1em;
+}
+.skill-item-period {
+  margin-right: 0;
+  justify-content: flex-end;
+}}
+@media screen and (max-width: 320px) {
+.skill-item-lang {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+.skill-item-star {
+  justify-content: space-around;
+  flex: 1.5;
+  margin-bottom: 0;
+}}
+@media screen and (max-width: 760px) {
+.skill-item {
+  display: flex;
+  flex-direction: column;
+}
+.skill-item-mobile {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}}
+@media screen and (min-width: 1441px) {
+h2.skill-item-lang {
+  font-size: 50px;
+}
+.skill-item-comment {
+  font-size: 50px;
+}
+.skill-item-star-img {
+  width: 80px;
+  height: 80px;
+}}
+@media screen and (max-width: 500px) {
+.skill-item-star-img {
+  width: 30px;
+  height: 30px;
+}}
