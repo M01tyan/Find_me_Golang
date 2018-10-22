@@ -8,11 +8,13 @@ import Divider from '@material-ui/core/Divider'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import './App.css'
 import About from './About'
+import Edits from './Edits'
 import BaseInfo from './BaseInfo'
 import TodoCard from './TodoCard'
 import Skill from './Skill'
 import History from './History'
 import Career from './Career'
+import SelfPR from './SelfPR'
 
 export default class App extends Component {
   render() {
@@ -21,6 +23,7 @@ export default class App extends Component {
         <div>
           <Header />
           <Route exact path='/' component={Home} />
+          <Route path="/edits" component={Edits} />
           <Route path='/about' component={About} />
           <Footer />
         </div>
@@ -34,10 +37,11 @@ class Home extends Component {
     return (
       <div className="container">
         <BaseInfo name="前田 幹太" furigana="Kanta Maeda" university="会津大学" department="コンピュータ理工学部" subject="コンピュータ理工学科" age="20" graduate_year="2020" email="s1240236@u-aizu.ac.jp" tel="080-2725-8866" key="baseInfo" />
-        <TodoCard key="todoCards" />
+        <TodoCard />
         <Skill />
         <History />
         <Career />
+        <SelfPR />
       </div>
     )
   }
@@ -70,7 +74,7 @@ class Header extends Component {
             >
               <div>
                 <List><Link to="/" className="link">Home</Link></List>
-                <List><Link to="/" className="link">編集</Link></List>
+                <List><Link to="/edits" className="link">編集</Link></List>
                 <List><Link to="/about" className="link">このサイトについて</Link></List>
                 <Divider />
               </div>
@@ -80,8 +84,8 @@ class Header extends Component {
         <a href="/"><img src={Findme} alt="Find_me_logo" className="header-logo" /></a>
         <div className="header-links">
           <Link to="/" className="link">Home</Link>
-          <Link to="/" className="link">編集</Link>
-          <Link to="/about/show" className="link">このサイトについて</Link>
+          <Link to="/edits" className="link">編集</Link>
+          <Link to="/about" className="link">このサイトについて</Link>
         </div>
         <div className="header-blank">&nbsp;</div>
       </div>

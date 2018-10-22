@@ -1,0 +1,16 @@
+.self-pr {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.self-pr-flex {
+	display: flex;
+	flex-direction: row;
+}
+.blank {
+	flex: 1;
+}
+.self-pr-context {
+	flex: 4;
+	color: #fff;
+}

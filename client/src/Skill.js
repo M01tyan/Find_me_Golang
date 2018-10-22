@@ -1,15 +1,8 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import sr from './ScrollReveal'
 import Star from './images/star.png'
 import StarGood from './images/star_good.png'
 import './Skill.css'
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
 
 export default class Skill extends Component {
   componentDidMount() {
@@ -110,10 +103,10 @@ class ProgSkill extends Component {
   render() {
     const items = []
     for(var j=0; j<this.props.skill.rank; j++){
-      items.push(<img src={StarGood} className="skill-item-star-img" />)
+      items.push(<img src={StarGood} alt="good-star" className="skill-item-star-img" key={j} />)
     }
     for(let i=j; i<5; i++){
-      items.push(<img src={Star} className="skill-item-star-img" />)
+      items.push(<img src={Star} alt="bad-star" className="skill-item-star-img" key={i} />)
     }
     return (
       <div className="skill-item">

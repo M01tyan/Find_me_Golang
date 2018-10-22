@@ -54,6 +54,7 @@
   background-color: #fff;
   display: flex;
   flex-direction: column;
+  bottom: 0;
 }
 .footer-logo {
   color: #dc143c;

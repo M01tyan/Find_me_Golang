@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import sr from './ScrollReveal'
 import Arrow from './images/right-arrow.png'
 import './History.css'
@@ -58,7 +57,7 @@ class HistoryItem extends Component {
   render() {
     return (
       <div className="history-item" ref="history_item">
-        <img src={Arrow} className="history-arrow-img" />
+        <img src={Arrow} alt="arrow" className="history-arrow-img" />
         <p className="history-content">{this.props.text}</p>
       </div>
     )

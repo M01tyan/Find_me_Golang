@@ -41,7 +41,7 @@ export default class TodoCardItems extends Component {
           images: [Aizulogo, Monaca, Nifty, Onsen, Js],
           detail: "会津大学の施設利用状況を直感的に認識できるアプリケーション",
           motivation: "現在利用できる教室の利用状況がわかりにくので、スマホでいつでも確認できる物が欲しいと思った",
-          technologies: ["HTML5", "CSS3", "JavaScript", "Monaca", "Nifty Cloud", "Js"],
+          technologies: ["HTML5", "CSS3", "JavaScript", "Monaca", "Nifty Cloud"],
           period: "3ヶ月",
           member: "１人",
           favorite: 0,
@@ -191,29 +191,27 @@ class TodoCard extends Component {
               <ExpandMoreIcon />
             </IconButton>
           </CardActions>
-          <Collapse in={this.state.expanded} timeout="auto" unmountOnExit disableRipple>
+          <Collapse in={this.state.expanded} timeout="auto" unmountOnExit>
             <CardContent>
-              <h2 paragraph>タイトル</h2>
-              <Typography paragraph>
+              <h3>タイトル</h3>
+              <Typography variant="h5">
                 {this.state.item.title}
               </Typography>
-              <h3 paragraph>動機</h3>
-              <Typography paragraph>
+              <h3 >動機</h3>
+              <Typography>
                 {this.state.item.motivation}
               </Typography>
-              <h3 paragraph>使用技術</h3>
-              <Typography paragraph>
-                <ul className="todo-card-tech">
-                  {this.state.item.technologies.map((tech, i) => (
-                    <li className="todo-card-tech-item" key={i}>{tech}</li>
-                  ))}
-                </ul>
-              </Typography>
-              <h3 paragraph>開発期間</h3>
+              <h3>使用技術</h3>
+              <ul className="todo-card-tech">
+                {this.state.item.technologies.map((tech, i) => (
+                  <li className="todo-card-tech-item" key={i}>{tech}</li>
+                ))}
+              </ul>
+              <h3>開発期間</h3>
               <Typography>
                 {this.state.item.period}
               </Typography>
-              <h3 paragraph>開発人数</h3>
+              <h3>開発人数</h3>
               <Typography>
                 {this.state.item.member}
               </Typography>

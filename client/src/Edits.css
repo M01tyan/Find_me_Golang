@@ -1,0 +1,19 @@
+.edits {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	flex-grow: 1;
+}
+.edit-form {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: center;
+	background-color: #fff;
+}
+div.edit-form-text-field {
+	width: 200px;
+	margin: 15px 10px;
+}
+.edit-form-dense {
+	margin-top: 19px;
+}
