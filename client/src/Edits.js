@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
 import TextField from '@material-ui/core/TextField'
 import axios from 'axios'
-import AppBar from '@material-ui/core/AppBar';
-import Tabs from '@material-ui/core/Tabs';
-import Tab from '@material-ui/core/Tab';
+import AppBar from '@material-ui/core/AppBar'
+import Tabs from '@material-ui/core/Tabs'
+import Tab from '@material-ui/core/Tab'
 import './Edits.css'
 
 const ranges = [
@@ -61,22 +61,21 @@ class BaseEdit extends Component {
     super(props)
     this.state = {
       base: {
-        name: "前田 幹太",
-        furigana: "Kanta Maeda",
-        university: "会津大学",
-        department: "コンピュータ理工学部",
-        subject: "コンピュータ理工学科",
-        graduate: 2020,
-        facebook: "https://www.facebook.com/M01tyan",
-        github: "https://github.com/M01tyan",
-        twitter: "",
+        name: "",
+        furigana: "",
+        university: "",
+        department: "",
+        subject: "",
+        liked: '',
+        sites: [],
+        graduate: '',
+        todo_id: '',
+        visitor_id: '',
       },
     };
   }
   handleChange = name => event => {
-    this.setState({
-      [name]: event.target.value,
-    });
+    this.setState({...this.state.base, [name]: event.target.value});
   };
   
   handleSubmit = event => {
@@ -103,20 +102,25 @@ class BaseEdit extends Component {
     */
   }
   componentDidMount() {
-    console.log("ok")
-      /*
     axios
-      .get("/base/1")
+      .get("http://localhost:8000/api/users", {
+        headers: {
+          'Content-Type': 'application/json',
+      }})
       .then(results => {
         const message = results.data
-        console.log(message)
+        this.setState({ base: message })
+        //console.log(typeof this.state.base.name)
       })
+      
+      /*
       $.ajax({
-        url: "/bases/1",
+        url: "http://localhost:5000/api/users",
         dataType: 'json',
         cache: false,
         success: function(message) {
-          this.setState({ name: message.name, furigana: message.furigana, university: message.university, department: message.department, subject: message.subject, graduate_year: message.graduate_year, email: message.email, tel: message.tel, github: message.github, facebook: message.facebook, twitter: message.twitter })
+          console.log(message)
+          //this.setState({ name: message.name, furigana: message.furigana, university: message.university, department: message.department, subject: message.subject, graduate_year: message.graduate_year, email: message.email, tel: message.tel, github: message.github, facebook: message.facebook, twitter: message.twitter })
           console.log("success")
         }.bind(this),
         error: function(_xhr, status, err) {
@@ -124,7 +128,7 @@ class BaseEdit extends Component {
         }.bind(this)
       })
       */
-    }
+  }
   
   render() {
     return (
@@ -190,6 +194,31 @@ class BaseEdit extends Component {
             className="edit-form-text-field"
             margin="normal"
           />
+          {this.state.base.sites.map((site, i) => (
+            <div>
+              <TextField
+                id="standard-required"
+                label="Site Title"
+                type="search"
+                value={site.url_title}
+                onChange={this.handleChange('url_title')}
+                className="edit-form-text-field"
+                margin="normal"
+              />
+              <TextField
+                id="standard-required"
+                label="Facebook Link"
+                type="search"
+                placeholder="https://www.facebook.com/"
+                value={site.url}
+                onChange={this.handleChange('facebook')}
+                margin="normal"
+                InputLabelProps={{
+                  shrink: true,
+                }}
+              />
+            </div>
+          ))}
           {/*
           <TextField
             select
@@ -205,7 +234,6 @@ class BaseEdit extends Component {
               </MenuItem>
             ))}
           </TextField>
-        */}
           <TextField
             id="standard-full-width"
             label="Facebook Link"
@@ -256,6 +284,7 @@ class BaseEdit extends Component {
             className="edit-form-text-field"
             margin="normal"
           />
+        */}
           <TextField
             id="standard-bare"
             className="edit-form-text-field"
