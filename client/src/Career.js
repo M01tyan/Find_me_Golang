@@ -7,6 +7,8 @@ import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import Typography from '@material-ui/core/Typography';
 import Now from './images/now.jpg'
+import Next from './images/next.jpg'
+import Future from './images/future.jpg'
 
 export default class Career extends Component {
   constructor(props) {
@@ -20,12 +22,12 @@ export default class Career extends Component {
         },
         {
           title: "近未来",
-          img: Now,
+          img: Next,
           context: "エンジニアとしてキャリアを始めしっかりとした技術力を身につける",
         },
         {
           title: "将来のキャリア像",
-          img: Now,
+          img: Future,
           context: "エンジニアと企画を繋ぐ役割を担っていきたい",
         },
       ],
