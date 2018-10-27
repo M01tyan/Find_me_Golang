@@ -162,7 +162,7 @@ class TodoCard extends Component {
           <div className="todo-card-media">
             <GridList cols={1.0} className="todo-card-media-gridList">
               {this.state.item.images.map((image, i) => (
-                <GridListTile key={image}>
+                <GridListTile style={{height: 250}} key={image}>
                   <img src={image} alt={i} />
                 </GridListTile>
               ))}

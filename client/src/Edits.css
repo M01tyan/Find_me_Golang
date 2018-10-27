@@ -36,6 +36,19 @@ div.edit-form-url-title {
 	align-items: center;
 	padding-bottom: 20px;
 }
+.edit-form-icon-title {
+	color: #868686;
+	margin: 0;
+}
+.edit-form-icon-input {
+	position: absolute;
+	opacity: 0;
+}
+div.edit-form-icon-img {
+	width: 200px;
+	height: 200px;
+	margin: 15px;
+}
 @media screen and (max-width: 439px) {
 div.edit-form-text-field {
 	width: 100%;
@@ -44,3 +57,49 @@ div.edit-form-text-field {
 	width: 50vw;
 	margin: 15px 10px;
 }}
+
+/*TodoEdit*/
+.edit-form-todo {
+	width: 100vw;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+div.edit-form-todo-card {
+	margin: 20px;
+	background-color: #eee;
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	width: 95vw;
+}
+.edit-form-todo-card-img {
+	width: 40vw;
+}
+.edit-form-todo-card-content {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.edit-form-todo-card-text-field {
+	width: 50vw;
+}
+div.edit-form-todo-card-tech {
+	background-color: #eee;
+	width:50vw;
+}
+.edit-form-todo-card-tech-items {
+	width: 100%;
+    position: relative;
+    overflow: auto;
+    max-height: 300px;
+}
+.edit-form-todo-card-grid-new {
+	width: 256px;
+	height: 158px;
+}
+.edit-form-todo-card-grid-delete {
+	position: absolute;
+	top: -5vh;
+	z-index: 1;
+}
