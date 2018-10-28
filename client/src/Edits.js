@@ -11,21 +11,11 @@ import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import Avatar from '@material-ui/core/Avatar'
 import Dialog from '@material-ui/core/Dialog'
 import DialogActions from '@material-ui/core/DialogActions'
-import DialogContent from '@material-ui/core/DialogContent'
-import DialogContentText from '@material-ui/core/DialogContentText'
 import DialogTitle from '@material-ui/core/DialogTitle'
-import Card from '@material-ui/core/Card'
-import CardContent from '@material-ui/core/CardContent'
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
-import List from '@material-ui/core/List'
-import ListItem from '@material-ui/core/ListItem'
-import ListItemText from '@material-ui/core/ListItemText'
-import ExpansionPanel from '@material-ui/core/ExpansionPanel'
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import Sample from './images/sample_icon.png'
+import TodoEdit from './TodoEdit'
+import SkillEdit from './SkillEdit'
+import HistoryEdit from './HistoryEdit'
 import './Edits.css'
 
 export default class Edits extends Component {
@@ -38,6 +28,7 @@ export default class Edits extends Component {
   handleChange = (event, value) => {
     this.setState({ value: value })
   }
+
   render() {
     const { value } = this.state;
     return (
@@ -55,8 +46,8 @@ export default class Edits extends Component {
         </AppBar>
         { this.state.value === 0 && <BaseEdit /> }
         { this.state.value === 1 && <TodoEdit /> }
-        { this.state.value === 2 && <BaseEdit /> }
-        { this.state.value === 3 && <BaseEdit /> }
+        { this.state.value === 2 && <SkillEdit /> }
+        { this.state.value === 3 && <HistoryEdit /> }
         { this.state.value === 4 && <BaseEdit /> }
         { this.state.value === 5 && <BaseEdit /> }
       </div>
@@ -64,6 +55,8 @@ export default class Edits extends Component {
   }
 }
 
+
+/*基本情報編集フォーム*/
 class BaseEdit extends Component {
   constructor(props) {
     super(props)
@@ -331,257 +324,6 @@ class BaseEdit extends Component {
             </Button>
           </DialogActions>
         </Dialog>
-      </div>
-    )
-  }
-}
-
-class TodoEdit extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      todos: [
-        {
-          title: '',
-          sites: [{url_title: '', url: '',},],
-          comment: '',
-          motivation: '',
-          liked: '',
-          technologies: [],
-          images: [],
-          period: '',
-          member: '',
-        },
-      ],
-      new_todo: [
-        {
-          title: '',
-          sites: [{url_title: '', url: '',},],
-          comment: '',
-          motivation: '',
-          liked: '',
-          technologies: [],
-          images: [],
-          period: '',
-          member: '',
-        },
-      ],
-      tech: '',
-      open: false,
-      delete: {
-        i: '',
-        j: '',
-      },
-    }
-  }
-  handleChange = (name, id) => event => {
-    let todos = this.state.todos
-    todos[id][name] = event.target.value
-    this.setState({todos: todos})
-  }
-  handleTechChange = event => {
-    this.setState({tech: event.target.value})
-  }
-  onKeyPress = (id) => event => {
-    if (event.charCode === 13) { // enter key pressed
-      // do something here
-      event.preventDefault();
-      let todos = this.state.todos
-      todos[id].technologies.push(event.target.value)
-      this.setState({todos: todos})
-      this.setState({tech: ''})
-      console.log(this.state.todos[0].technologies)
-    } 
-  }
-  handleChangeFile = (id) => event => {
-    let createObjectURL = (window.URL || window.webkitURL).createObjectURL || window.createObjectURL
-    // ①イベントからfileの配列を受け取る
-    let files = event.target.files
-
-    // ②createObjectURLで、files[0]を読み込む
-    if(files[0] != null) {
-      let image_url = createObjectURL(files[0])
-      let todos = this.state.todos
-      todos[id].images.push(image_url)
-      // ③setStateする！
-      this.setState({todos: todos})
-    }
-  }
-  deleteTechs = (i, j) => event => {
-    let todos = this.state.todos
-    todos[i].technologies.splice(j, 1)
-    this.setState({todos: todos})
-  }
-  deleteImages = event => {
-    let todos = this.state.todos
-    console.log(todos[this.state.delete.i].images)
-    todos[this.state.delete.i].images.splice(this.state.delete.j, 1)
-    this.setState({todos: todos})
-    this.setState({ open: false })
-  }
-  deleteState = (i, j) => event => {
-    let delete_ij = this.state.delete
-    delete_ij.i = i
-    delete_ij.j = j
-    this.setState({delete: delete_ij})
-    this.setState({ open: true })
-  }
-  handleClickOpen = () => {
-    this.setState({ open: true })
-  }
-  handleClose = () => {
-    this.setState({ open: false })
-  }
-  handleMessageSubmit = () => {
-    console.log(this.state.todos)
-  }
-  render() {
-    return (
-      <div className="edit">
-        <div className="edit-form">
-          <div className="edit-form-todo">
-            {this.state.todos.map((todo, i) => (
-              <Card key={i} className="edit-form-todo-card">
-                <CardContent className="edit-form-todo-card-content">
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Title(タイトル)"
-                    type="search"
-                    value={todo.title}
-                    onChange={this.handleChange('title', i)}
-                    className="edit-form-todo-card-text-field"
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <TextField
-                    required
-                    id="outlined-multiline-static"
-                    label="Detail(詳細)"
-                    rows="4"
-                    multiline
-                    value={todo.comment}
-                    onChange={this.handleChange('comment', i)}
-                    className="edit-form-todo-card-text-field"
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <TextField
-                    required
-                    id="outlined-multiline-static"
-                    label="Motivation(動機)"
-                    rows="4"
-                    multiline
-                    value={todo.motivation}
-                    onChange={this.handleChange('motivation', i)}
-                    className="edit-form-todo-card-text-field"
-                    margin="normal"
-                    variant="outlined"
-                  />{/*
-                    <ul>
-                      <div className="edit-form-todo-card-tech">
-                        {todo.technologies.map((tech, k) => (
-                          <li className="edit-form-todo-card-tech-item" key={k}>{tech}</li>
-                        ))}
-                      </div>
-                    </ul>
-                  */}
-                    <ExpansionPanel className="edit-form-todo-card-tech">
-                      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                        <h3 className="edit-form-icon-title">開発技術一覧</h3>
-                      </ExpansionPanelSummary>
-                      <ExpansionPanelDetails>
-                        <List className="edit-form-todo-card-tech-items">
-                          {todo.technologies.map((tech, j) => {
-                            return (
-                              <ListItem className="edit-form-todo-card-tech-item" key={j}>
-                                <ListItemText primary={tech} />
-                                <IconButton aria-label="Delete" onClick={this.deleteTechs(i, j)}>
-                                  <DeleteIcon />
-                                </IconButton>
-                              </ListItem>
-                            )
-                          })}
-                        </List>
-                      </ExpansionPanelDetails>
-                    </ExpansionPanel>
-                    <TextField
-                      required
-                      id="outlined-multiline-static"
-                      label="Add Technology(開発技術の追加)"
-                      value={this.state.tech}
-                      onChange={this.handleTechChange}
-                      className="edit-form-todo-card-text-field"
-                      margin="normal"
-                      variant="outlined"
-                      onKeyPress={this.onKeyPress(i)}
-                    />
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Period(開発期間)"
-                    type="search"
-                    value={todo.period}
-                    onChange={this.handleChange('period', i)}
-                    className="edit-form-todo-card-text-field"
-                    margin="normal"
-                    variant="outlined"
-                  />
-                  <TextField
-                    required
-                    id="outlined-required"
-                    label="Member(開発メンバー・人数)"
-                    type="search"
-                    value={todo.member}
-                    onChange={this.handleChange('member', i)}
-                    className="edit-form-todo-card-text-field"
-                    margin="normal"
-                    variant="outlined"
-                  />
-                </CardContent>
-                <CardContent className="edit-form-todo-card-img">
-                  <h3 className="edit-form-icon-title">Image</h3>
-                  <GridList cellHeight={180} className="edit-form-todo-card-grid">
-                    {todo.images.map((image, j) => (
-                      <GridListTile style={{height: 158, width: 256}} key={j}>
-                        <img src={image} alt={j} style={{height: 158, width: 256, objectFit: 'cover'}}/>
-                        <IconButton aria-label="Delete" color="secondary" className="edit-form-todo-card-grid-delete" onClick={this.deleteState(i, j)} >
-                          <DeleteIcon />
-                        </IconButton>
-                        <Dialog
-                          open={this.state.open}
-                          onClose={this.handleClose}
-                          aria-labelledby="alert-dialog-title"
-                          aria-describedby="alert-dialog-description"
-                        >
-                          <DialogTitle id="alert-dialog-title">本当に削除していいですか？</DialogTitle>
-                          <DialogActions>
-                            <Button onClick={this.handleClose} color="primary">
-                              Disagree
-                            </Button>
-                            <Button onClick={this.deleteImages} color="primary" autoFocus>
-                              Agree
-                            </Button>
-                          </DialogActions>
-                        </Dialog>
-                      </GridListTile>
-                    ))}
-                    <GridListTile style={{height: 158, width: 256}}>
-                      <Button variant="contained" className="edit-form-todo-card-grid-new" color="default" onChange={this.handleChangeFile(i)} >
-                        <input type="file" className="edit-form-icon-input edit-form-todo-card-grid-new" />
-                        Upload
-                        <CloudUploadIcon />
-                      </Button>
-                    </GridListTile>
-                  </GridList>
-                  <Button variant="outlined" color="primary" onClick={this.handleMessageSubmit}>
-                    POST
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
       </div>
     )
   }

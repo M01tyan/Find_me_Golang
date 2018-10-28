@@ -1,3 +1,4 @@
+/*BaseEdit*/
 .edits {
 	display: flex;
 	flex-direction: column;
@@ -34,7 +35,7 @@ div.edit-form-url-title {
 	display: flex;
 	flex-direction: column;
 	align-items: center;
-	padding-bottom: 20px;
+	padding: 20px 0px;
 }
 .edit-form-icon-title {
 	color: #868686;
@@ -66,12 +67,16 @@ div.edit-form-text-field {
 	align-items: center;
 }
 div.edit-form-todo-card {
+	display: flex;
+	flex-direction: column;
 	margin: 20px;
 	background-color: #eee;
+	width: 95vw;
+}
+div.edit-form-todo-card-item {
 	display: flex;
 	flex-direction: row;
 	justify-content: center;
-	width: 95vw;
 }
 .edit-form-todo-card-img {
 	width: 40vw;
@@ -94,12 +99,98 @@ div.edit-form-todo-card-tech {
     overflow: auto;
     max-height: 300px;
 }
+.edit-form-todo-card-url-title {
+	margin: 0px;
+}
+button.edit-form-todo-card-delete {
+	padding: 0px 0px;
+}
 .edit-form-todo-card-grid-new {
-	width: 256px;
-	height: 158px;
+	width: 282px;
+	height: 180px;
 }
 .edit-form-todo-card-grid-delete {
 	position: absolute;
-	top: -5vh;
+	top: -7vh;
 	z-index: 1;
+}
+@media screen and (max-width: 690px) {
+div.edit-form-todo-card-item {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.edit-form-todo-card-text-field {
+	width: 80vw;
+}
+div.edit-form-todo-card-tech {
+	width: 80vw;
+}
+.edit-form-todo-card-img {
+	width: 90vw;
+}}
+@media screen and (max-width: 564px) {
+.edit-form-todo-card-grid {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.edit-form-todo-card-text-field {
+	width: 90vw;
+}
+div.edit-form-todo-card-tech {
+	width: 90vw;
+}}
+
+/*SkillEdit*/
+.edit-form-skill {
+	width: 100vw;
+	overflow-x: auto;
+	background-color: #eee;
+}
+.edit-form-skill-table {
+	min-width: 400px;
+}
+td.edit-form-skill-star {
+	padding: 0px;
+}
+button.edit-form-skill-star-button {
+	margin: 0px;
+	padding: 0px;
+	width: 20px;
+	height: 20px;
+	background-color: #eee;
+	box-shadow: none;
+}
+.edit-form-skill-star-item {
+	display: flex;
+	flex-direction: row;
+}
+th.edit-form-skill-language {
+	width: 20vw;
+	padding-right: 10px;
+}
+td.edit-form-skill-comment {
+	width: 20vw;
+	padding-left: 10px;
+}
+div.edit-form-skill-text-field {
+	margin: 0px;
+	padding-right: 0px;
+	width: 30vw;
+}
+
+/*HistoryEdit*/
+.edit-form-histories {
+	width: 100vw;
+	background-color: #fff;
+    overflow-x: auto
+}
+th.edit-form-history-id {
+	text-align: left;
+	width: 70px;
+	padding-right: 0px;
+}
+.edit-form-history {
+
 }

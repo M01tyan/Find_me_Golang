@@ -31,9 +31,13 @@ div.todo-card-media {
   justify-content: space-around;
   overflow: hidden;
 }
-ul.todo-card-media-gridList {
-  flex-wrap: nowrap;
-  transform: translateZ(0);
+.todo-card-media-img {
+  height: 255px;
+  display: block;
+  max-width: 400px;
+  overflow: hidden;
+  width: 100%;
+  /*object-fit: cover;*/
 }
 .todo-card-actions {
   display: flex;

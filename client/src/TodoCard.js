@@ -16,14 +16,21 @@ import Menu from '@material-ui/core/Menu'
 import MenuItem from '@material-ui/core/MenuItem'
 import Fade from '@material-ui/core/Fade'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
-import GridList from '@material-ui/core/GridList'
-import GridListTile from '@material-ui/core/GridListTile'
+import MobileStepper from '@material-ui/core/MobileStepper'
+import Button from '@material-ui/core/Button'
+import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft'
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
+import SwipeableViews from 'react-swipeable-views'
+import { autoPlay } from 'react-swipeable-views-utils'
 import Aizulogo from './images/logo2g.jpg'
 import Monaca from './images/monaca.jpg'
 import Nifty from './images/mobile_backend.jpeg'
 import Onsen from './images/onsen_ui.png'
 import Js from './images/JavaScript-logo.png'
 import './TodoCard.css'
+
+
+const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 export default class TodoCardItems extends Component {
   constructor(props) {
@@ -103,6 +110,7 @@ class TodoCard extends Component {
       expanded: false,
       anchorEl: null,
       item: this.props.item,
+      activeStep: 0,
     }
   }
 
@@ -126,10 +134,27 @@ class TodoCard extends Component {
       }
     }))
   }
+  handleNext = () => {
+    this.setState(prevState => ({
+      activeStep: prevState.activeStep + 1,
+    }));
+  };
+
+  handleBack = () => {
+    this.setState(prevState => ({
+      activeStep: prevState.activeStep - 1,
+    }));
+  };
+
+  handleStepChange = activeStep => {
+    this.setState({ activeStep });
+  };
 
   render() {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
+    const { activeStep } = this.state
+    const maxSteps = this.state.item.images.length
     return (
       <div className="todo-card">
         <Card className="todo-card-card">
@@ -160,13 +185,37 @@ class TodoCard extends Component {
             subheader="December, 2016 ~ May, 2018"
           />
           <div className="todo-card-media">
-            <GridList cols={1.0} className="todo-card-media-gridList">
-              {this.state.item.images.map((image, i) => (
-                <GridListTile style={{height: 250}} key={image}>
-                  <img src={image} alt={i} />
-                </GridListTile>
+            <AutoPlaySwipeableViews
+              index={activeStep}
+              onChangeIndex={this.handleStepChange}
+              enableMouseEvents
+            >
+              {this.state.item.images.map((step, index) => (
+                <div key={index}>
+                  {Math.abs(activeStep - index) <= 2 ? (
+                    <img className="todo-card-media-img" src={step} alt={step} />
+                  ) : null}
+                </div>
               ))}
-            </GridList>
+            </AutoPlaySwipeableViews>
+            <MobileStepper
+              steps={maxSteps}
+              position="static"
+              activeStep={activeStep}
+              style={{width: '100%'}}
+              nextButton={
+                <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
+                  Next
+                  <KeyboardArrowRight />
+                </Button>
+              }
+              backButton={
+                <Button size="small" onClick={this.handleBack} disabled={activeStep === 0}>
+                  Back
+                  <KeyboardArrowLeft />
+                </Button>
+              }
+            />
           </div>
           <CardContent>
             <Typography component="p">
