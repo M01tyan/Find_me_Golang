@@ -202,7 +202,7 @@ class TodoCard extends Component {
               steps={maxSteps}
               position="static"
               activeStep={activeStep}
-              style={{width: '100%'}}
+              style={{width: '90%'}}
               nextButton={
                 <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
                   Next

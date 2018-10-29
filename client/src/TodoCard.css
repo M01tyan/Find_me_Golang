@@ -37,7 +37,7 @@ div.todo-card-media {
   max-width: 400px;
   overflow: hidden;
   width: 100%;
-  /*object-fit: cover;*/
+  object-fit: cover;
 }
 .todo-card-actions {
   display: flex;

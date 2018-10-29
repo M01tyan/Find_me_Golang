@@ -6,11 +6,8 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
-import Button from '@material-ui/core/Button'
 import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
-import GoodStar from './images/star_good.png'
-import NotStar from './images/star.png'
 import './Edits.css'
 
 export default class SkillEdit extends Component {

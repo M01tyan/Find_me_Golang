@@ -16,6 +16,7 @@ import Sample from './images/sample_icon.png'
 import TodoEdit from './TodoEdit'
 import SkillEdit from './SkillEdit'
 import HistoryEdit from './HistoryEdit'
+import CareerEdit from './CareerEdit'
 import './Edits.css'
 
 export default class Edits extends Component {
@@ -48,7 +49,7 @@ export default class Edits extends Component {
         { this.state.value === 1 && <TodoEdit /> }
         { this.state.value === 2 && <SkillEdit /> }
         { this.state.value === 3 && <HistoryEdit /> }
-        { this.state.value === 4 && <BaseEdit /> }
+        { this.state.value === 4 && <CareerEdit /> }
         { this.state.value === 5 && <BaseEdit /> }
       </div>
     )

@@ -191,6 +191,40 @@ th.edit-form-history-id {
 	width: 70px;
 	padding-right: 0px;
 }
-.edit-form-history {
 
+/*CareerEdit*/
+.edit-form-career {
+	width: 100vw;
+	background-color: #fff;
+}
+.edit-form-career-card {
+	margin: 20px;
+	background-color: #eee;
+	height: 60vh;
+	/*background: linear-gradient(to top, rgba(217, 175, 217, 0.7) 0%, rgba(151, 217, 225, 0.7) 100%),url("./images/now.jpg");*/  /* 背景画像指定 */
+	background-size: cover;
+	background-repeat:  no-repeat;
+	background-position: center;
+}
+.edit-form-now {
+	background-image: url("./images/now.jpg");
+}
+.edit-form-near {
+	background-image: url("./images/next.jpg");
+}
+.edit-form-future {
+	background-image: url("./images/future.jpg");
+}
+.edit-form-career-card-div {
+	background: rgba(255, 255, 255, 0.6);
+	height: 60vh;
+}
+.edit-form-career-button {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin-bottom: 30px;
+}
+div.edit-form-career-card-content {
+	padding: 0 10px;
 }
