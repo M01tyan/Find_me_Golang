@@ -64,7 +64,7 @@ export default class SkillEdit extends Component {
 			          </TableRow>
 			        )
 	          })}
-	          <NewSkill pushNewSkill={this.pushNewSkill} />
+	          <NewSkillEdit pushNewSkill={this.pushNewSkill} />
 	        </TableBody>
 	      </Table>
 	    </div>
@@ -72,7 +72,7 @@ export default class SkillEdit extends Component {
   }
 }
 
-class NewSkill extends Component {
+class NewSkillEdit extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {

@@ -15,6 +15,8 @@ import Skill from './Skill'
 import History from './History'
 import Career from './Career'
 import SelfPR from './SelfPR'
+import SignIn from './SignIn'
+import SignUp from './SignUp'
 
 export default class App extends Component {
   render() {
@@ -22,8 +24,11 @@ export default class App extends Component {
       <BrowserRouter>
         <div>
           <Header />
-          <Route exact path='/' component={Home} />
-          <Route path="/edits" component={Edits} />
+          <Route exact path='/:userType/:userId/:furigana' component={Home} />
+          <Route path='/signIn' component={SignIn} />
+          <Route path='/signUp' component={SignUp} />
+          <Route path='/:userType/:userId/edits/new' component={Edits} />
+          <Route path='/:userType/:userId/:furigana/edits' component={Edits} />
           <Route path='/about' component={About} />
           <Footer />
         </div>
@@ -36,7 +41,7 @@ class Home extends Component {
   render() {
     return (
       <div className="container">
-        <BaseInfo name="前田 幹太" furigana="Kanta Maeda" university="会津大学" department="コンピュータ理工学部" subject="コンピュータ理工学科" age="20" graduate_year="2020" email="s1240236@u-aizu.ac.jp" tel="080-2725-8866" key="baseInfo" />
+        <BaseInfo />
         <TodoCard />
         <Skill />
         <History />
@@ -61,6 +66,8 @@ class Header extends Component {
     });
   };
   render() {
+    const path = window.location.pathname
+    const paths = path.split("/")
     return (
       <div className="header">
         <div className="header-button">
@@ -73,8 +80,8 @@ class Header extends Component {
               onKeyDown={this.toggleDrawer('top', false)}
             >
               <div>
-                <List><Link to="/" className="link">Home</Link></List>
-                <List><Link to="/edits" className="link">編集</Link></List>
+                <List><Link to={"/"+paths[1]+"/"+paths[2]+"/"+paths[3]} className="link">Home</Link></List>
+                <List><Link to={"/"+paths[1]+"/"+paths[2]+"/"+paths[3]+"/edits"} className="link">編集</Link></List>
                 <List><Link to="/about" className="link">このサイトについて</Link></List>
                 <Divider />
               </div>
@@ -83,8 +90,8 @@ class Header extends Component {
         </div>
         <a href="/"><img src={Findme} alt="Find_me_logo" className="header-logo" /></a>
         <div className="header-links">
-          <Link to="/" className="link">Home</Link>
-          <Link to="/edits" className="link">編集</Link>
+          <Link to={"/"+paths[1]+"/"+paths[2]+"/"+paths[3]} className="link">Home</Link>
+          <Link to={"/"+paths[1]+"/"+paths[2]+"/"+paths[3]+"/edits"} className="link">編集</Link>
           <Link to="/about" className="link">このサイトについて</Link>
         </div>
         <div className="header-blank">&nbsp;</div>

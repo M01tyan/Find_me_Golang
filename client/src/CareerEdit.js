@@ -9,8 +9,6 @@ import './Edits.css'
 
 export default class SkillEdit extends Component {
 	constructor(props) {
-		let size;
-		if(window.parent.screen.width < 425) size = "10"
 		super(props)
 		this.state = {
 			career: {

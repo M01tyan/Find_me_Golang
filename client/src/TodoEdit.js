@@ -38,6 +38,21 @@ export default class TodoEdit extends Component {
       },
     }
   }
+  componentDidMount() {
+    const path = window.location.pathname
+    const paths = path.split("/")
+    console.log(paths)
+    axios
+      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
+        headers: {
+          'Content-Type': 'application/json',
+      }})
+      .then(results => {
+        const message = results.data
+        console.log(message)
+        this.setState({todos: message})
+      })
+  }
   handleChange = (name, id) => event => {
     let todos = this.state.todos
     todos[id][name] = event.target.value
@@ -130,7 +145,7 @@ export default class TodoEdit extends Component {
                       label="Detail(詳細)"
                       rows="4"
                       multiline
-                      value={todo.comment}
+                      value={todo.detail}
                       onChange={this.handleChange('comment', i)}
                       className="edit-form-todo-card-text-field"
                       margin="normal"

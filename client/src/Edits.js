@@ -9,9 +9,11 @@ import IconButton from '@material-ui/core/IconButton'
 import DeleteIcon from '@material-ui/icons/Delete'
 import CloudUploadIcon from '@material-ui/icons/CloudUpload'
 import Avatar from '@material-ui/core/Avatar'
-import Dialog from '@material-ui/core/Dialog'
-import DialogActions from '@material-ui/core/DialogActions'
-import DialogTitle from '@material-ui/core/DialogTitle'
+import CircularProgress from '@material-ui/core/CircularProgress'
+import CheckIcon from '@material-ui/icons/Check'
+import InputLabel from '@material-ui/core/InputLabel'
+import MenuItem from '@material-ui/core/MenuItem'
+import Select from '@material-ui/core/Select'
 import Sample from './images/sample_icon.png'
 import TodoEdit from './TodoEdit'
 import SkillEdit from './SkillEdit'
@@ -31,7 +33,7 @@ export default class Edits extends Component {
   }
 
   render() {
-    const { value } = this.state;
+    const { value } = this.state
     return (
       <div className="edits">
         <h2 className="title">編集フォーム</h2>
@@ -45,12 +47,12 @@ export default class Edits extends Component {
             <Tab label="自己PR" />
           </Tabs>
         </AppBar>
-        { this.state.value === 0 && <BaseEdit /> }
-        { this.state.value === 1 && <TodoEdit /> }
-        { this.state.value === 2 && <SkillEdit /> }
-        { this.state.value === 3 && <HistoryEdit /> }
-        { this.state.value === 4 && <CareerEdit /> }
-        { this.state.value === 5 && <BaseEdit /> }
+        { value === 0 && <BaseEdit /> }
+        { value === 1 && <TodoEdit /> }
+        { value === 2 && <SkillEdit /> }
+        { value === 3 && <HistoryEdit /> }
+        { value === 4 && <CareerEdit /> }
+        { value === 5 && <BaseEdit /> }
       </div>
     )
   }
@@ -68,18 +70,15 @@ class BaseEdit extends Component {
         university: '',
         department: '',
         subject: '',
-        liked: '',
+        liked: 0,
         icon: Sample,
         sites: [],
         graduate: '',
-        todo_id: '',
-        visitor_id: '',
       },
       new_site: {
         url_title: '',
         url: '',
       },
-      open: false,
     }
   }
 
@@ -135,43 +134,65 @@ class BaseEdit extends Component {
       this.pushNewSite()
     } 
   }
-  handleClickOpen = () => {
-    this.setState({ open: true });
-  }
-
-  handleClose = () => {
-    this.setState({ open: false });
-  }
   handleMessageSubmit = () => {
-    this.setState({ open: false });
     console.log(this.state.base)
-    /*
-    $.ajax({
-        url: "/bases/1",
-        dataType: 'json',
-        type: 'PATCH',
-        data: message,
-        success: function(message) {
-          window.location.href = '/'
-        }.bind(this),
-        error: function(_xhr, status, err) {
-          console.error(this.props.url, status, err.toString())
-        }.bind(this)
-      })
-    */
+    const path = window.location.pathname
+    const paths = path.split("/")
+    if(!path.match('/new')) {
+
+    } else {
+      console.log(paths)
+      axios
+        .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/new/base", {
+          name: this.state.base.name,
+          furigana: this.state.base.furigana,
+          university: this.state.base.university,
+          department: this.state.base.department,
+          subject: this.state.base.subject,
+          graduate: this.state.base.graduate,
+          liked: this.state.base.liked,
+          sites: this.state.base.sites
+        }, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        .then(results => {
+          const message = results.data
+          console.log(message)
+          if(message === true) {
+            console.log("success")
+          } else {
+            console.log("error")
+          }
+        })
+    }
   }
   componentDidMount() {
-    /*
-    axios
-      .get("http://localhost:8000/api/users", {
-        headers: {
-          'Content-Type': 'application/json',
-      }})
-      .then(results => {
-        const message = results.data
-        this.setState({ base: message })
-      })
-      */
+    const path = window.location.pathname
+    let paths = path.split("/")
+    if(!path.match('/new')) {
+      axios
+        .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+          headers: {
+            'Content-Type': 'application/json',
+        }})
+        .then(results => {
+          const message = results.data
+          this.setState({ base: message })
+        })
+    } else {
+      axios
+        .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+          headers: {
+            'Content-Type': 'application/json',
+        }})
+        .then(results => {
+          const message = results.data
+          console.log(message)
+          if(message.sites != null) this.setState({ base: message })
+        })
+    }
   }
   
   render() {
@@ -229,16 +250,19 @@ class BaseEdit extends Component {
               className="edit-form-text-field"
               margin="normal"
             />
-            <TextField
-              required
-              id="standard-required"
-              label="Graduate Year(卒業年度)"
-              type="search"
-              value={this.state.base.graduate}
-              onChange={this.handleChange('graduate')}
-              className="edit-form-text-field"
-              margin="normal"
-            />
+            <div className="edit-form-graduate">
+              <InputLabel style={{fontSize: 12}}>Graduate(卒業年度)</InputLabel>
+              <Select
+                value={this.state.base.graduate}
+                onChange={this.handleChange('graduate')}
+                className="edit-form-text-field"
+                style={{marginTop: 0}}
+              >
+                <MenuItem value={2020}>2020</MenuItem>
+                <MenuItem value={2021}>2021</MenuItem>
+                <MenuItem value={2022}>2022</MenuItem>
+              </Select>
+            </div>
           </div>
           <div className="edit-form-sites">
             {this.state.base.sites.map((site, i) => (
@@ -304,28 +328,63 @@ class BaseEdit extends Component {
                 <CloudUploadIcon />
             </Button>
             <Avatar src={this.state.base.icon} className="edit-form-icon-img" />
-            <Button variant="outlined" color="primary" onClick={this.handleClickOpen}>
-              POST
-            </Button>
+            <UploadButton handleClickOpen={this.handleMessageSubmit} />
           </div>
         </div>
-        <Dialog
-          open={this.state.open}
-          onClose={this.handleClose}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">更新しますか？</DialogTitle>
-          <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
-              Disagree
-            </Button>
-            <Button onClick={this.handleMessageSubmit} key="agree" color="primary" autoFocus>
-              Agree
-            </Button>
-          </DialogActions>
-        </Dialog>
       </div>
     )
+  }
+}
+
+class UploadButton extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      loading: false,
+      success: false,
+    }
+  }
+
+  componentWillUnmount() {
+    clearTimeout(this.timer);
+  }
+
+  handleButtonClick = () => {
+    if (!this.state.loading) {
+      this.setState(
+        {
+          success: false,
+          loading: true,
+        },
+        () => {
+          this.timer = setTimeout(() => {
+            this.setState({
+              loading: false,
+              success: true,
+            })
+          }, 2000)
+        },
+      )
+    }
+  }
+
+  render() {
+    const { loading, success } = this.state
+  
+    return (
+      <div className="upload-button">
+        <div className="upload-button-wrapper">
+          <Button
+            variant="outlined"
+            disabled={loading}
+            color="primary"
+            onClick={this.handleButtonClick}
+          >
+            {success ? <CheckIcon /> : "POST"}
+          </Button>
+          {loading && <CircularProgress size={24} className="upload-button-progress" />}
+        </div>
+      </div>
+    );
   }
 }

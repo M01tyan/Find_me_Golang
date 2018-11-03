@@ -27,6 +27,11 @@ div.edit-form-text-field {
 	width: 200px;
 	margin: 15px 10px;
 }
+.edit-form-graduate {
+	display: flex;
+	flex-direction: column;
+	margin-top: 19px;
+}
 div.edit-form-url-title {
 	width: 200px;
 	margin: 15px 10px;
@@ -58,6 +63,23 @@ div.edit-form-text-field {
 	width: 50vw;
 	margin: 15px 10px;
 }}
+
+/*UploadButton*/
+.upload-button {
+	display: flex;
+	align-items: center;
+}
+.upload-button-wrapper {
+	position: relative;
+}
+.upload-button-progress {
+	color: #7FFF00;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	margin-top: -12px;
+	margin-left: -12px;
+}
 
 /*TodoEdit*/
 .edit-form-todo {
