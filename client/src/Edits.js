@@ -71,14 +71,16 @@ class BaseEdit extends Component {
         department: '',
         subject: '',
         liked: 0,
-        icon: Sample,
+        icon: '',
         sites: [],
         graduate: '',
+        icon: '',
       },
       new_site: {
         url_title: '',
         url: '',
       },
+      icon: '',
     }
   }
 
@@ -114,18 +116,25 @@ class BaseEdit extends Component {
     this.setState({base: base})
     this.setState({new_site: { url_title: '', url: ''}})
   }
+  changeIcon(img) {
+    this.setState({icon: img})
+  }
   handleChangeFile = event => {
     let createObjectURL = (window.URL || window.webkitURL).createObjectURL || window.createObjectURL
     // ①イベントからfileの配列を受け取る
     let files = event.target.files
-
     // ②createObjectURLで、files[0]を読み込む
     let image_url = createObjectURL(files[0])
     let base = this.state.base
     base.icon = image_url
+    this.setState({base: base})
+    let reader = new FileReader()
+    let image
+    reader.readAsDataURL(files[0])
+    reader.onload = e => {
+      this.changeIcon(e.target.result)
+    }
     // ③setStateする！
-    this.setState({base: base});
-
   }
   onKeyPress = event => {
     if (event.charCode === 13) { // enter key pressed
@@ -135,13 +144,11 @@ class BaseEdit extends Component {
     } 
   }
   handleMessageSubmit = () => {
-    console.log(this.state.base)
     const path = window.location.pathname
     const paths = path.split("/")
     if(!path.match('/new')) {
 
     } else {
-      console.log(paths)
       axios
         .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/new/base", {
           name: this.state.base.name,
@@ -159,9 +166,19 @@ class BaseEdit extends Component {
         })
         .then(results => {
           const message = results.data
-          console.log(message)
           if(message === true) {
-            console.log("success")
+            console.log(this.state.icon)
+            axios
+              .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+                image: this.state.icon
+              }, {
+                headers: {
+                  'Content-Type': 'application/json'
+                }
+              })
+              .then(results => {
+                console.log(results.data)
+              })
           } else {
             console.log("error")
           }
@@ -196,6 +213,7 @@ class BaseEdit extends Component {
   }
   
   render() {
+    const { icon } = this.state.base
     return (
       <div className="edit">
         <div className="edit-form">
@@ -365,6 +383,7 @@ class UploadButton extends Component {
           }, 2000)
         },
       )
+      this.props.handleClickOpen()
     }
   }
 

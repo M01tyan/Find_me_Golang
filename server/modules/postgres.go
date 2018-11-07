@@ -136,7 +136,7 @@ func PostStudents(user_type string, user_id int, student Students) (bool) {
 
 func GetUsers(login_id string, password string) (user_info UserInfo) {
     Db := OpenDB()
-    err := Db.QueryRow("SELECT user_id, user_type from Users LEFt OUTER JOIN Auth ON users.id=auth.user_id WHERE login_id=$1 AND password=$2", login_id, password).Scan(&user_info.UserId, &user_info.UserType)
+    err := Db.QueryRow("SELECT user_id, user_type from Users LEFT OUTER JOIN Auth ON users.id=auth.user_id WHERE login_id=$1 AND password=$2", login_id, password).Scan(&user_info.UserId, &user_info.UserType)
     if err != nil {
         log.Println(err)
     }
@@ -183,7 +183,10 @@ func CreateUser(login_id string, password string, user_type string) (user_info N
         if err != nil {
             log.Println(err)
         }
-        _, err = Db.Exec("INSERT INTO Users (id, user_type) VALUES ($1,$2)",user_info.UserId+1, user_info.UserType)
+        user_info.UserId++
+        fmt.Print(user_info.UserId)
+        fmt.Println(" CREATE NEW USER ID")
+        _, err = Db.Exec("INSERT INTO Users (id, user_type) VALUES ($1,$2)",user_info.UserId, user_info.UserType)
         if err != nil {
             log.Println(err)
         }
