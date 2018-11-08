@@ -71,10 +71,9 @@ class BaseEdit extends Component {
         department: '',
         subject: '',
         liked: 0,
-        icon: '',
         sites: [],
         graduate: '',
-        icon: '',
+        icon: Sample,
       },
       new_site: {
         url_title: '',
@@ -117,7 +116,8 @@ class BaseEdit extends Component {
     this.setState({new_site: { url_title: '', url: ''}})
   }
   changeIcon(img) {
-    this.setState({icon: img})
+    let image = img.split(',')
+    this.setState({icon: image[1]})
   }
   handleChangeFile = event => {
     let createObjectURL = (window.URL || window.webkitURL).createObjectURL || window.createObjectURL
@@ -129,7 +129,6 @@ class BaseEdit extends Component {
     base.icon = image_url
     this.setState({base: base})
     let reader = new FileReader()
-    let image
     reader.readAsDataURL(files[0])
     reader.onload = e => {
       this.changeIcon(e.target.result)
@@ -167,7 +166,6 @@ class BaseEdit extends Component {
         .then(results => {
           const message = results.data
           if(message === true) {
-            console.log(this.state.icon)
             axios
               .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
                 image: this.state.icon
@@ -188,7 +186,28 @@ class BaseEdit extends Component {
   componentDidMount() {
     const path = window.location.pathname
     let paths = path.split("/")
-    if(!path.match('/new')) {
+    // if(!path.match('/new')) {
+    //   axios
+    //     .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+    //       headers: {
+    //         'Content-Type': 'application/json',
+    //     }})
+    //     .then(results => {
+    //       const message = results.data
+    //       this.setState({ base: message })
+    //       axios
+    //         .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+    //           headers: {
+    //             'Content-Type': 'application/json',
+    //         }})
+    //         .then(results => {
+    //           let img = "data:image/png;base64,"+results
+    //           let base = this.state.base
+    //           base.icon = img
+    //           this.setState({ base: base})
+    //         })
+    //     })
+    // } else {
       axios
         .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
           headers: {
@@ -196,20 +215,25 @@ class BaseEdit extends Component {
         }})
         .then(results => {
           const message = results.data
+          if(message.sites === null) message.sites = []
+          axios
+            .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+              headers: {
+                'Content-Type': 'application/json',
+            }})
+            .then(results => {
+              if(String(results.data) !== "") {
+                console.log(results)
+                let img = "data:image/png;base64,"+String(results.data)
+                message.icon = img
+              } else {
+                console.log("NOT ICON")
+                message.icon = Sample
+              }
+            })
           this.setState({ base: message })
         })
-    } else {
-      axios
-        .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
-          headers: {
-            'Content-Type': 'application/json',
-        }})
-        .then(results => {
-          const message = results.data
-          console.log(message)
-          if(message.sites != null) this.setState({ base: message })
-        })
-    }
+   // }
   }
   
   render() {

@@ -8,9 +8,7 @@ import (
 	"encoding/base64"
 	"strconv"
 	"fmt"
-	"bytes"
-	_"image"
-	"image/jpeg"
+	"io/ioutil"
 
 	"github.com/M01tyan/React_with_Go/server/modules"
 	"github.com/gorilla/mux"
@@ -35,6 +33,7 @@ func main() {
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", GetTodos).Methods("GET")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/new/base", PostBase).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", PostIcon).Methods("POST", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", GetIcon).Methods("GET")
 
     routerWithCORS := handlers.CORS(
     	handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"}),
@@ -108,23 +107,29 @@ func PostIcon(w http.ResponseWriter, r *http.Request) {
     if error != nil {
         w.Write([]byte("json decode error" + error.Error() + "\n"))
     }
-    unbased, _ := base64.StdEncoding.DecodeString(image.Image)
-    jpgI, errJpg := jpeg.Decode(bytes.NewReader(unbased))
- 	f, err := os.Create("icon.jpeg")
-    if err != nil {
-        panic(err)
+    data, _ := base64.StdEncoding.DecodeString(image.Image)
+    id := mux.Vars(r)
+    if err := os.MkdirAll("./images/"+id["userType"]+"/"+id["userId"], 0777); err != nil {
+        fmt.Println(err)
     }
-    defer f.Close()
-    if _, err = f.Write([]byte(jpgI)); err != nil {
-        panic(err)
-    }
-    if err = f.Sync(); err != nil {
-        panic(err)
-    }
+	file, _ := os.Create("./images/"+id["userType"]+"/"+id["userId"]+"/"+"icon.jpg")
+	defer file.Close()
+
+	file.Write(data)
     response := true
     w.Header().Set("Content-Type", "application/json")
     res, _ := json.Marshal(response)
 	w.Write(res)
+}
+
+func GetIcon(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	file, _ := os.Open("./images/"+id["userType"]+"/"+id["userId"]+"/icon.jpg")
+	file_data, _ := ioutil.ReadAll(file)
+	imgEnc := base64.StdEncoding.EncodeToString(file_data)
+	w.Header().Set("Content-Type", "application/json")
+    res, _ := json.Marshal(imgEnc)
+    w.Write(res)
 }
 
 func GetTodos(w http.ResponseWriter, r *http.Request) {
