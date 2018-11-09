@@ -73,12 +73,12 @@ class BaseEdit extends Component {
         liked: 0,
         sites: [],
         graduate: '',
-        icon: Sample,
       },
       new_site: {
         url_title: '',
         url: '',
       },
+      base64icon: '',
       icon: '',
     }
   }
@@ -117,7 +117,7 @@ class BaseEdit extends Component {
   }
   changeIcon(img) {
     let image = img.split(',')
-    this.setState({icon: image[1]})
+    this.setState({base64icon: image[1]})
   }
   handleChangeFile = event => {
     let createObjectURL = (window.URL || window.webkitURL).createObjectURL || window.createObjectURL
@@ -125,9 +125,7 @@ class BaseEdit extends Component {
     let files = event.target.files
     // ②createObjectURLで、files[0]を読み込む
     let image_url = createObjectURL(files[0])
-    let base = this.state.base
-    base.icon = image_url
-    this.setState({base: base})
+    this.setState({icon: image_url})
     let reader = new FileReader()
     reader.readAsDataURL(files[0])
     reader.onload = e => {
@@ -168,7 +166,7 @@ class BaseEdit extends Component {
           if(message === true) {
             axios
               .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
-                image: this.state.icon
+                image: this.state.base64icon
               }, {
                 headers: {
                   'Content-Type': 'application/json'
@@ -186,54 +184,31 @@ class BaseEdit extends Component {
   componentDidMount() {
     const path = window.location.pathname
     let paths = path.split("/")
-    // if(!path.match('/new')) {
-    //   axios
-    //     .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
-    //       headers: {
-    //         'Content-Type': 'application/json',
-    //     }})
-    //     .then(results => {
-    //       const message = results.data
-    //       this.setState({ base: message })
-    //       axios
-    //         .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
-    //           headers: {
-    //             'Content-Type': 'application/json',
-    //         }})
-    //         .then(results => {
-    //           let img = "data:image/png;base64,"+results
-    //           let base = this.state.base
-    //           base.icon = img
-    //           this.setState({ base: base})
-    //         })
-    //     })
-    // } else {
-      axios
-        .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
-          headers: {
-            'Content-Type': 'application/json',
-        }})
-        .then(results => {
-          const message = results.data
-          if(message.sites === null) message.sites = []
-          axios
-            .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
-              headers: {
-                'Content-Type': 'application/json',
-            }})
-            .then(results => {
-              if(String(results.data) !== "") {
-                console.log(results)
-                let img = "data:image/png;base64,"+String(results.data)
-                message.icon = img
-              } else {
-                console.log("NOT ICON")
-                message.icon = Sample
-              }
-            })
-          this.setState({ base: message })
-        })
-   // }
+    axios
+      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+        headers: {
+          'Content-Type': 'application/json',
+      }})
+      .then(results => {
+        const message = results.data
+        if(message.sites === null) message.sites = []
+        this.setState({ base: message })
+        axios
+          .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+            headers: {
+              'Content-Type': 'application/json',
+          }})
+          .then(results => {
+            if(String(results.data) !== "") {
+              console.log(results)
+              let img = "data:image/png;base64,"+String(results.data)
+              this.setState({icon: img})
+            } else {
+              console.log("NOT ICON")
+              this.setState({icon: 'https://raw.githubusercontent.com/M01tyan/Find_me_Golang/master/client/src/images/sample_icon.png'})
+            }
+          })
+      })
   }
   
   render() {
@@ -369,7 +344,7 @@ class BaseEdit extends Component {
                 Upload
                 <CloudUploadIcon />
             </Button>
-            <Avatar src={this.state.base.icon} className="edit-form-icon-img" />
+            <Avatar src={this.state.icon} className="edit-form-icon-img" />
             <UploadButton handleClickOpen={this.handleMessageSubmit} />
           </div>
         </div>
@@ -378,7 +353,7 @@ class BaseEdit extends Component {
   }
 }
 
-class UploadButton extends Component {
+export class UploadButton extends Component {
   constructor(props) {
     super(props)
     this.state = {

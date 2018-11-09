@@ -21,6 +21,7 @@ import ExpansionPanel from '@material-ui/core/ExpansionPanel'
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary'
 import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails'
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import {UploadButton} from './Edits'
 import './Edits.css'
 
 
@@ -41,15 +42,15 @@ export default class TodoEdit extends Component {
   componentDidMount() {
     const path = window.location.pathname
     const paths = path.split("/")
-    console.log(paths)
     axios
       .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
         headers: {
           'Content-Type': 'application/json',
       }})
       .then(results => {
-        const message = results.data
+        let message = results.data
         console.log(message)
+        if(message === null) message = []
         this.setState({todos: message})
       })
   }
@@ -115,9 +116,21 @@ export default class TodoEdit extends Component {
     this.setState({ open: false })
   }
   handleNewMessageSubmit = (new_todo) => {
+    const path = window.location.pathname
+    const paths = path.split("/")
     let todos = this.state.todos
     todos.push(new_todo)
     this.setState({todos: todos})
+    axios
+      .post('http://localhost:8000/api/users/'+paths[1]+'/'+paths[2]+'/edits/todos', {
+        todos: this.state.todos
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+      }})
+      .then(results => {
+
+      })
   }
   render() {
     return (
@@ -576,11 +589,7 @@ class NewTodoEdit extends Component {
                 </Button>
               </GridListTile>
             </GridList>
-            <div className="edit-form-post-button">
-              <Button variant="outlined" color="primary" onClick={this.handleMessageSubmit}>
-                POST
-              </Button>
-            </div>
+            <UploadButton handleClickOpen={this.handleMessageSubmit} />
           </CardContent>
         </div>
       </Card>

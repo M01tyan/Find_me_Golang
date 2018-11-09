@@ -31,7 +31,6 @@ type Todo struct {
     Detail       string   `json:"detail"`
     Motivation   string   `json:"motivation"`
     Technologies []string `json:"technologies"`
-    SiteId       int      `json:"site_id"`
     Period       string   `json:"period"`
     Member       string   `json:"member"`
     Sites        []Sites  `json:"sites"`
@@ -126,9 +125,21 @@ func PostStudents(user_type string, user_id int, student Students) (bool) {
     Db := OpenDB()
     PostSites(user_id, student.SITES)
     if(user_type == "student") {
-       _, err := Db.Exec("INSERT INTO Students (user_id, name, furigana, university, department, subject, graduate, liked) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",user_id, student.NAME, student.FURIGANA, student.UNIVERSITY, student.DEPARTMENT, student.SUBJECT, student.GRADUATE, student.LIKED)
+        var id int
+        err := Db.QueryRow("SELECT user_id from Students WHERE user_id=$1", user_id).Scan(&id)
         if err != nil {
             log.Println(err)
+        }
+        if id == 0 {
+            _, err = Db.Exec("INSERT INTO Students (user_id, name, furigana, university, department, subject, graduate, liked) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",user_id, student.NAME, student.FURIGANA, student.UNIVERSITY, student.DEPARTMENT, student.SUBJECT, student.GRADUATE, student.LIKED)
+            if err != nil {
+                log.Println(err)
+            }
+        } else {
+            _, err = Db.Exec("UPDATE Students SET name=$1, furigana=$2, university=$3, department=$4, subject=$5, graduate=$6, liked=$7 WHERE user_id=$8",student.NAME, student.FURIGANA, student.UNIVERSITY, student.DEPARTMENT, student.SUBJECT, student.GRADUATE, student.LIKED, user_id)
+            if err != nil {
+                log.Println(err)
+            }
         }
     }
     return true
@@ -224,20 +235,34 @@ func GetTodoTech(user_id int, todo_id int) (technology []string) {
     }
     return
 }
-
+/*
+func PostTodoTech(user_id int, todo_id int, tech []string) bool {
+    Db := OpenDB()
+    rows, errs := Db.Query("SELECT name FROM TodoTech WHERE user_id=$1 AND todo_id=$2", user_id, todo_id)
+    if errs != nil {
+        log.Println(errs)
+    }
+    for rows.Next() {
+        var tech string
+        rows.Scan(&tech)
+        technology = append(technology, tech)
+    }
+    return true
+} 
+*/
 func GetTodos(user_id int) (todos []Todo) {
     Db := OpenDB()
     fmt.Print(user_id) 
     fmt.Println(" GET TODOS USER ID")
-    rows, errs := Db.Query("SELECT id, title, detail, motivation, site_id, period, member FROM Todos WHERE user_id=$1", user_id)
+    rows, errs := Db.Query("SELECT id, title, detail, motivation, period, member FROM Todos WHERE user_id=$1", user_id)
     if errs != nil {
         log.Println(errs)
     }
     for rows.Next() {
         var todo Todo
-        rows.Scan(&todo.Id, &todo.Title, &todo.Detail, &todo.Motivation, &todo.SiteId, &todo.Period, &todo.Member)
+        rows.Scan(&todo.Id, &todo.Title, &todo.Detail, &todo.Motivation, &todo.Period, &todo.Member)
         todo.Technologies = GetTodoTech(user_id, todo.Id)
-        todo.Sites = GetTodoSites(user_id, todo.SiteId)
+        todo.Sites = GetTodoSites(user_id, todo.Id)
         todo.Images = append(todo.Images, "a")
         todos = append(todos, todo)
     }
@@ -246,3 +271,19 @@ func GetTodos(user_id int) (todos []Todo) {
     Db.Close()
     return 
 }
+/*
+func PostTodos(user_id int, todo Todo) bool {
+    Db := OpenDB()
+    var id int
+    err := Db.QueryRow("SELECT id from Todos WHERE user_id=$1 AND id=$2", user_id, Todo.id).Scan(&id)
+    if err != nil {
+        log.Println(err)
+    }
+    if id == 0 {
+        _, err = Db.Exec("INSERT INTO Todos (user_id, ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",user_id, student.NAME, student.FURIGANA, student.UNIVERSITY, student.DEPARTMENT, student.SUBJECT, student.GRADUATE, student.LIKED)
+        if err != nil {
+            log.Println(err)
+        }
+    }
+}
+*/

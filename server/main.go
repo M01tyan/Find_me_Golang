@@ -31,6 +31,7 @@ func main() {
     r.HandleFunc("/api/users/signUp", SignUp).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/base", GetBase).Methods("GET")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", GetTodos).Methods("GET")
+   // r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", GetTodos).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/new/base", PostBase).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", PostIcon).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", GetIcon).Methods("GET")
@@ -133,10 +134,24 @@ func GetIcon(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTodos(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json")
 	id := mux.Vars(r)
 	user_id, _ := strconv.Atoi(id["userId"])
 	response := modules.GetTodos(user_id)
+	w.Header().Set("Content-Type", "application/json")
 	res, _ := json.Marshal(response)
 	w.Write(res)
 }
+/*
+func PostTodos(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	decoder := json.NewDecoder(r.Body)
+    var todos []modules.Todo
+    error := decoder.Decode(&todos)
+    if error != nil {
+        w.Write([]byte("json decode error" + error.Error() + "\n"))
+    }
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.PostTodos(user_id, todos)
+}
+*/
