@@ -271,6 +271,22 @@ func GetTodos(user_id int) (todos []Todo) {
     Db.Close()
     return 
 }
+
+func DeleteTodo(user_id int, id int) bool {
+    Db := OpenDB()
+    _, err := Db.Exec("DELETE FROM TodoSites WHERE user_id=$1 AND todo_id=$2", user_id, id)
+    _, err = Db.Exec("DELETE FROM TodoTech WHERE user_id=$1 AND todo_id=$2", user_id, id)
+    _, err = Db.Exec("DELETE FROM Todos WHERE user_id=$1 AND id=$2", user_id, id)
+    
+    _, err = Db.Exec("UPDATE Todos SET id=id-1 WHERE user_id=$1 AND id>$2", user_id, id)
+    _, err = Db.Exec("UPDATE TodoSites SET todo_id=todo_id-1 WHERE user_id=$1 AND todo_id>$2", user_id, id)
+    _, err = Db.Exec("UPDATE TodoTech SET todo_id=todo_id-1 WHERE user_id=$1 AND todo_id>$2", user_id, id)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}
 /*
 func PostTodos(user_id int, todo Todo) bool {
     Db := OpenDB()

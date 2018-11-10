@@ -25,12 +25,17 @@ type Icon struct {
 	Image string `json:"image"`
 }
 
+type DeleteTodoId struct {
+	Id string `json:"id"`
+}
+
 func main() {
     r := mux.NewRouter()
     r.HandleFunc("/api/users/signIn", SignIn).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/signUp", SignUp).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/base", GetBase).Methods("GET")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", GetTodos).Methods("GET")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", DeleteTodo).Methods("DELETE", "OPTIONS")
    // r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", GetTodos).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/new/base", PostBase).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", PostIcon).Methods("POST", "OPTIONS")
@@ -138,6 +143,18 @@ func GetTodos(w http.ResponseWriter, r *http.Request) {
 	user_id, _ := strconv.Atoi(id["userId"])
 	response := modules.GetTodos(user_id)
 	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func DeleteTodo(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	todo, _ := r.URL.Query()["id"]
+	todo_id, _ := strconv.Atoi(todo[0])
+    fmt.Println(" DELETE TODO ID")
+    response := modules.DeleteTodo(user_id, todo_id)
+    w.Header().Set("Content-Type", "application/json")
 	res, _ := json.Marshal(response)
 	w.Write(res)
 }
