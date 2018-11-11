@@ -78,24 +78,7 @@ func GetBaseSites(user_id int) (sites []Sites){
     return 
 }
 
-func GetTodoSites(user_id int, todo_id int) (sites []Sites) {
-    Db := OpenDB()
-    rows, errs := Db.Query("SELECT url_title, url FROM TodoSites WHERE user_id=$1 AND todo_id=$2", user_id, todo_id)
-    if errs != nil {
-        log.Println(errs)
-    }
-    for rows.Next() {
-        var site Sites
-        rows.Scan(&site.URL_TITLE, &site.URL)
-        sites = append(sites, site)
-    }
-    fmt.Print(sites)
-    fmt.Println(" GET TODO SITES")
-    Db.Close()
-    return
-}
-
-func PostSites(user_id int, sites []Sites) () {
+func PostBaseSites(user_id int, sites []Sites) () {
     Db := OpenDB()
     for i, site := range sites {
         fmt.Print(site)
@@ -106,6 +89,7 @@ func PostSites(user_id int, sites []Sites) () {
         }
     }
 }
+
 
 func GetStudents(user_id int) (student Students){
     Db := OpenDB()
@@ -123,7 +107,7 @@ func GetStudents(user_id int) (student Students){
 
 func PostStudents(user_type string, user_id int, student Students) (bool) {
     Db := OpenDB()
-    PostSites(user_id, student.SITES)
+    PostBaseSites(user_id, student.SITES)
     if(user_type == "student") {
         var id int
         err := Db.QueryRow("SELECT user_id from Students WHERE user_id=$1", user_id).Scan(&id)
@@ -222,6 +206,39 @@ func LoginedAt(user_id int) () {
     }
 }
 
+func GetTodoSites(user_id int, todo_id int) (sites []Sites) {
+    Db := OpenDB()
+    rows, errs := Db.Query("SELECT url_title, url FROM TodoSites WHERE user_id=$1 AND todo_id=$2", user_id, todo_id)
+    if errs != nil {
+        log.Println(errs)
+    }
+    for rows.Next() {
+        var site Sites
+        rows.Scan(&site.URL_TITLE, &site.URL)
+        sites = append(sites, site)
+    }
+    fmt.Print(sites)
+    fmt.Println(" GET TODO SITES")
+    Db.Close()
+    return
+}
+
+func PostTodoSites(user_id int, todo_id int, sites []Sites) {
+    Db := OpenDB()
+    var id int
+    err := Db.QueryRow("SELECT max(id) from TodoSites WHERE user_id=$1 AND todo_id=$2", user_id, todo_id).Scan(&id)
+    for i, site := range sites {
+        if i < id {
+            _, err = Db.Exec("UPDATE TodoSites SET url_title=$1, url=$2 WHERE user_id=$3 AND todo_id=$4 AND id=$5", site.URL_TITLE, site.URL, user_id, todo_id, i+1)
+        } else {
+            _, err = Db.Exec("INSERT INTO TodoSites (user_id, todo_id, id, url_title, url) VALUES ($1,$2,$3,$4,$5)", user_id, todo_id, i+1, site.URL_TITLE, site.URL)
+        }
+    }
+    if err != nil {
+        log.Println(err)
+    }
+}
+
 func GetTodoTech(user_id int, todo_id int) (technology []string) {
     Db := OpenDB()
     rows, errs := Db.Query("SELECT name FROM TodoTech WHERE user_id=$1 AND todo_id=$2", user_id, todo_id)
@@ -235,21 +252,23 @@ func GetTodoTech(user_id int, todo_id int) (technology []string) {
     }
     return
 }
-/*
-func PostTodoTech(user_id int, todo_id int, tech []string) bool {
+
+func PostTodoTech(user_id int, todo_id int, techs []string) {
     Db := OpenDB()
-    rows, errs := Db.Query("SELECT name FROM TodoTech WHERE user_id=$1 AND todo_id=$2", user_id, todo_id)
-    if errs != nil {
-        log.Println(errs)
+    var id int
+    err := Db.QueryRow("SELECT max(id) from TodoTech WHERE user_id=$1 AND todo_id=$2", user_id, todo_id).Scan(&id)
+    for i, tech := range techs {
+        if i < id {
+            _, err = Db.Exec("UPDATE TodoTech SET name=$1 WHERE user_id=$2 AND todo_id=$3 AND id=$4", tech, user_id, todo_id, i+1)
+        } else {
+            _, err = Db.Exec("INSERT INTO TodoTech (user_id, todo_id, id, name) VALUES ($1,$2,$3,$4)", user_id, todo_id, i+1, tech)
+        }
     }
-    for rows.Next() {
-        var tech string
-        rows.Scan(&tech)
-        technology = append(technology, tech)
+    if err != nil {
+        log.Println(err)
     }
-    return true
-} 
-*/
+}
+
 func GetTodos(user_id int) (todos []Todo) {
     Db := OpenDB()
     fmt.Print(user_id) 
@@ -277,29 +296,36 @@ func DeleteTodo(user_id int, id int) bool {
     _, err := Db.Exec("DELETE FROM TodoSites WHERE user_id=$1 AND todo_id=$2", user_id, id)
     _, err = Db.Exec("DELETE FROM TodoTech WHERE user_id=$1 AND todo_id=$2", user_id, id)
     _, err = Db.Exec("DELETE FROM Todos WHERE user_id=$1 AND id=$2", user_id, id)
-    
-    _, err = Db.Exec("UPDATE Todos SET id=id-1 WHERE user_id=$1 AND id>$2", user_id, id)
-    _, err = Db.Exec("UPDATE TodoSites SET todo_id=todo_id-1 WHERE user_id=$1 AND todo_id>$2", user_id, id)
-    _, err = Db.Exec("UPDATE TodoTech SET todo_id=todo_id-1 WHERE user_id=$1 AND todo_id>$2", user_id, id)
     if err != nil {
         log.Println(err)
     }
     Db.Close()
     return true
 }
-/*
-func PostTodos(user_id int, todo Todo) bool {
+
+func PostTodos(user_id int, todo Todo) (response bool) {
     Db := OpenDB()
     var id int
-    err := Db.QueryRow("SELECT id from Todos WHERE user_id=$1 AND id=$2", user_id, Todo.id).Scan(&id)
-    if err != nil {
-        log.Println(err)
-    }
-    if id == 0 {
-        _, err = Db.Exec("INSERT INTO Todos (user_id, ) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)",user_id, student.NAME, student.FURIGANA, student.UNIVERSITY, student.DEPARTMENT, student.SUBJECT, student.GRADUATE, student.LIKED)
+    if todo.Id == 0 {
+        err := Db.QueryRow("SELECT max(id) from Todos WHERE user_id=$1", user_id).Scan(&id)
         if err != nil {
             log.Println(err)
         }
+        id = id +1
+        _, err = Db.Exec("INSERT INTO Todos (user_id, id, title, detail, motivation, period, member) VALUES ($1,$2,$3,$4,$5,$6,$7)", user_id, id, todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member)
+        if err != nil {
+            log.Println(err)
+        }
+        response = true
+    } else {
+        id = todo.Id
+        _, err := Db.Exec("UPDATE Todos SET title=$1, detail=$2, motivation=$3, period=$4, member=$5 WHERE user_id=$6 AND id=$7", todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member, user_id, id)
+        if err != nil {
+            log.Println(err)
+        }
+        response = false
     }
+    PostTodoTech(user_id, id, todo.Technologies)
+    PostTodoSites(user_id, id, todo.Sites)
+    return 
 }
-*/

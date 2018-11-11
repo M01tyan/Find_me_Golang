@@ -23,6 +23,10 @@
 	display: flex;
 	flex-direction: row;
 }
+button.edit-form-site-post {
+	height: 56px;
+    margin-top: 16px;
+}
 div.edit-form-text-field {
 	width: 200px;
 	margin: 15px 10px;
@@ -94,6 +98,9 @@ div.edit-form-todo-card {
 	margin: 20px;
 	background-color: #eee;
 	width: 95vw;
+}
+div.edit-form-todo-delete {
+	margin-top: -20px;
 }
 div.edit-form-todo-card-item {
 	display: flex;

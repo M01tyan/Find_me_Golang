@@ -43,6 +43,18 @@ export default class TodoEdit extends Component {
           liked: 0,
         }
       ],
+      new_todo: {
+        id: 0,
+        title: '',
+        detail: '',
+        motivation: '',
+        sites: [],
+        technologies: [],
+        images: [],
+        period: '',
+        member: '',
+        liked: 0,
+      },
       tech: '',
       open: false,
       delete: {
@@ -69,23 +81,12 @@ export default class TodoEdit extends Component {
     let todos = this.state.todos
     todos.splice(i, 1)
     this.setState({todos: todos})
+    console.log(todos)
   }
-  handleNewMessageSubmit = (new_todo) => {
-    const path = window.location.pathname
-    const paths = path.split("/")
+  handleNewTodo = (new_todo) => {
     let todos = this.state.todos
     todos.push(new_todo)
     this.setState({todos: todos})
-    axios
-      .post('http://localhost:8000/api/users/'+paths[1]+'/'+paths[2]+'/edits/todos', {
-        todos: this.state.todos
-      }, {
-        headers: {
-          'Content-Type': 'application/json',
-      }})
-      .then(results => {
-
-      })
   }
   render() {
     return (
@@ -94,11 +95,11 @@ export default class TodoEdit extends Component {
           <div className="edit-form-todo">
             {this.state.todos.map((todo, i) => (
               <div key={i}>
-                <TodoEditItem todo={todo} />
-                <DeleteTodo id={todo.id} />
+                <TodoEditItem todo={todo} handleNewTodo={console.log("UPDATE")}/>
+                <DeleteTodo id={todo.id} deleteTodo={this.deleteTodo(i)} />
               </div>
             ))}
-            <NewTodoEdit handleNewMessageSubmit={this.handleNewMessageSubmit} />
+            <TodoEditItem todo={this.state.new_todo} handleNewTodo={this.handleNewTodo} />
           </div>
         </div>
       </div>
@@ -106,11 +107,19 @@ export default class TodoEdit extends Component {
   }
 }
 
+
+
+
+
 class TodoEditItem extends Component {
   constructor(props) {
     super(props)
     this.state = {
       todo: this.props.todo,
+      new_site: {
+        url_title: '',
+        url: '',
+      },
       tech: '',
       open: false,
       delete_i: '',
@@ -123,6 +132,32 @@ class TodoEditItem extends Component {
     let todo = this.state.todo
     todo[name] = event.target.value
     this.setState({todo: todo})
+  }
+  handleTechChange = event => {
+    this.setState({tech: event.target.value})
+  }
+  handleSitesChange = (name, i) => event => {
+    let todo = this.state.todo
+    todo.sites[i][name] = event.target.value
+    console.log(todo.sites[i][name])
+    this.setState({todo: todo})
+  }
+  handleNewSiteChange = name => event => {
+    let new_site = this.state.new_site
+    new_site[name] = event.target.value
+    this.setState({new_site: new_site})
+  }
+  AddSite = event => {
+    let todo = this.state.todo
+    todo.sites.push(this.state.new_site)
+    this.setState({todo: todo})
+    this.setState({new_site: {url_title: '', url: ''}})
+  }
+  AddTech = event => {
+    let todo = this.state.todo
+    todo.technologies.push(this.state.tech)
+    this.setState({todo: todo})
+    this.setState({tech: ''})
   }
   handleChangeFile = event => {
     let createObjectURL = (window.URL || window.webkitURL).createObjectURL || window.createObjectURL
@@ -147,15 +182,10 @@ class TodoEditItem extends Component {
     this.setState({delete_i: j})
     this.setState({ open: true })
   }
-  onKeyPress = event => {
-    if (event.charCode === 13) { // enter key pressed
-      // do something here
-      event.preventDefault()
-      let todo = this.state.todo
-      todo.technologies.push(event.target.value)
-      this.setState({todo: todo})
-      this.setState({tech: ''})
-    } 
+  deleteSite = i => event => {
+    let todo = this.state.todo
+    todo.sites.splice(i, 1)
+    this.setState({todo: todo})
   }
   deleteImages = event => {
     let todo = this.state.todo
@@ -169,7 +199,32 @@ class TodoEditItem extends Component {
   handleClose = () => {
     this.setState({ open: false })
   }
-  handleNewMessageSubmit = (new_todo) => {
+  handleMessageSubmit = () => {
+    const path = window.location.pathname
+    const paths = path.split("/")
+    axios
+      .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
+        id: this.state.todo.id,
+        title: this.state.todo.title,
+        detail: this.state.todo.detail,
+        motivation: this.state.todo.motivation,
+        sites: this.state.todo.sites,
+        technologies: this.state.todo.technologies,
+        period: this.state.todo.period,
+        member: this.state.todo.member
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(results => {
+        const message = results.data
+        console.log(message)
+        if(message === "true") {
+          this.props.handleNewTodo(this.state.todo)
+          this.setState({todo: {title: '', detail: '', motivation: '', sites: [], technologies: [], period: '', member: '', images: [], liked:0}})
+        }
+      })
   }
   render() {
     return (
@@ -194,7 +249,7 @@ class TodoEditItem extends Component {
               rows="4"
               multiline
               value={this.state.todo.detail}
-              onChange={this.handleChange('comment')}
+              onChange={this.handleChange('detail')}
               className="edit-form-todo-card-text-field"
               margin="normal"
               variant="outlined"
@@ -230,17 +285,75 @@ class TodoEditItem extends Component {
                   </List>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
-              <TextField
-                required
-                id="outlined-multiline-static"
-                label="Add Technology(開発技術の追加)"
-                value={this.state.tech}
-                onChange={this.handleTechChange}
-                className="edit-form-todo-card-text-field"
-                margin="normal"
-                variant="outlined"
-                onKeyPress={this.onKeyPress}
-              />
+              <div className="edit-form-site edit-form-todo-card-text-field">
+                <TextField
+                  required
+                  id="outlined-multiline-static"
+                  label="Add Technology(開発技術の追加)"
+                  value={this.state.tech}
+                  onChange={this.handleTechChange}
+                  className="edit-form-todo-card-tech"
+                  margin="normal"
+                  variant="outlined"
+                />
+                <Button variant="outlined" color="primary" onClick={this.AddTech} className="edit-form-site-post">
+                  ADD
+                </Button>
+              </div>
+              <div className="edit-form-sites edit-form-todo-card-text-field">
+              {this.state.todo.sites.map((site, i) => (
+                <div className="edit-form-site" key={i}>
+                  <TextField
+                    id="outlined-required"
+                    label="Site Title"
+                    type="search"
+                    variant="outlined"
+                    value={site.url_title}
+                    onChange={this.handleSitesChange('url_title', i)}
+                    margin="normal"
+                  />
+                  <TextField
+                    id="outlined-required"
+                    label="Site URL"
+                    type="search"
+                    variant="outlined"
+                    placeholder="https://www.facebook.com/"
+                    value={site.url}
+                    fullWidth
+                    onChange={this.handleSitesChange('url', i)}
+                    margin="normal"
+                  />
+                  <IconButton aria-label="Delete" onClick={this.deleteSite(i)}>
+                    <DeleteIcon />
+                  </IconButton>
+                </div>
+              ))}
+              <div className="edit-form-site">
+                <TextField
+                  id="outlined-required"
+                  label="Site Title"
+                  type="search"
+                  variant="outlined"
+                  value={this.state.new_site.url_title}
+                  onChange={this.handleNewSiteChange('url_title')}
+                  margin="normal"
+                />
+                <TextField
+                  id="outlined-required"
+                  label="Site URL"
+                  type="search"
+                  variant="outlined"
+                  placeholder="https://www.facebook.com/"
+                  value={this.state.new_site.url}
+                  fullWidth
+                  onChange={this.handleNewSiteChange('url')}
+                  margin="normal"
+                />
+                <Button variant="outlined" color="primary" onClick={this.AddSite} className="edit-form-site-post">
+                  ADD
+                </Button>
+              </div>
+            </div>
             <TextField
               required
               id="outlined-required"
@@ -296,7 +409,7 @@ class TodoEditItem extends Component {
                   </Dialog>
                 </GridListTile>
               ))}
-              <GridListTile style={{height: 158, width: 256}}>
+              <GridListTile style={{height: 180, width: 282}}>
                 <Button variant="contained" className="edit-form-todo-card-grid-new" color="default" onChange={this.handleChangeFile} >
                   <input type="file" className="edit-form-icon-input edit-form-todo-card-grid-new" />
                   Upload
@@ -336,15 +449,15 @@ class DeleteTodo extends Component {
     axios
       .delete("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos?id="+this.props.id)
       .then(results => {
-        console.log(results)
         this.setState({ open: false })
+        this.props.deleteTodo()
       })
   }
 
   render() {
     return (
-      <div>
-        <Button variant="contained" color="secondary" onClick={this.handleClickOpen}>
+      <div className="edit-form-todo-card edit-form-todo-delete">
+        <Button variant="contained" color="secondary" onClick={this.handleClickOpen} className="todo-card-delete">
           Delete
           <DeleteIcon />
         </Button>
