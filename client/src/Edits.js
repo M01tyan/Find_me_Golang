@@ -143,43 +143,38 @@ class BaseEdit extends Component {
   handleMessageSubmit = () => {
     const path = window.location.pathname
     const paths = path.split("/")
-    if(!path.match('/new')) {
-
-    } else {
-      axios
-        .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/new/base", {
-          name: this.state.base.name,
-          furigana: this.state.base.furigana,
-          university: this.state.base.university,
-          department: this.state.base.department,
-          subject: this.state.base.subject,
-          graduate: this.state.base.graduate,
-          liked: this.state.base.liked,
-          sites: this.state.base.sites
-        }, {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-        .then(results => {
-          const message = results.data
-          if(message === true) {
-            axios
-              .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
-                image: this.state.base64icon
-              }, {
-                headers: {
-                  'Content-Type': 'application/json'
-                }
-              })
-              .then(results => {
-                console.log(results.data)
-              })
-          } else {
-            console.log("error")
-          }
-        })
-    }
+    axios
+      .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+        name: this.state.base.name,
+        furigana: this.state.base.furigana,
+        university: this.state.base.university,
+        department: this.state.base.department,
+        subject: this.state.base.subject,
+        graduate: this.state.base.graduate,
+        liked: this.state.base.liked,
+        sites: this.state.base.sites
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(results => {
+        const message = results.data
+        if(message === true) {
+          axios
+            .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+              image: this.state.base64icon
+            }, {
+              headers: {
+                'Content-Type': 'application/json'
+              }
+            })
+            .then(results => {
+            })
+        } else {
+          console.log("error")
+        }
+      })
   }
   componentDidMount() {
     const path = window.location.pathname
@@ -200,7 +195,6 @@ class BaseEdit extends Component {
           }})
           .then(results => {
             if(String(results.data) !== "") {
-              console.log(results)
               let img = "data:image/png;base64,"+String(results.data)
               this.setState({icon: img})
             } else {

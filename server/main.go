@@ -37,7 +37,9 @@ func main() {
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", GetTodos).Methods("GET")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", DeleteTodo).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", PostTodos).Methods("POST", "OPTIONS")
-    r.HandleFunc("/api/users/{userType}/{userId}/edits/new/base", PostBase).Methods("POST", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/tech", DeleteTech).Methods("DELETE", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/site", DeleteSite).Methods("DELETE", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/base", PostBase).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", PostIcon).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", GetIcon).Methods("GET")
 
@@ -147,17 +149,6 @@ func GetTodos(w http.ResponseWriter, r *http.Request) {
 	w.Write(res)
 }
 
-func DeleteTodo(w http.ResponseWriter, r *http.Request) {
-	id := mux.Vars(r)
-	user_id, _ := strconv.Atoi(id["userId"])
-	todo, _ := r.URL.Query()["id"]
-	todo_id, _ := strconv.Atoi(todo[0])
-    fmt.Println(" DELETE TODO ID")
-    response := modules.DeleteTodo(user_id, todo_id)
-    w.Header().Set("Content-Type", "application/json")
-	res, _ := json.Marshal(response)
-	w.Write(res)
-}
 
 func PostTodos(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -170,6 +161,44 @@ func PostTodos(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)
 	user_id, _ := strconv.Atoi(id["userId"])
 	response := modules.PostTodos(user_id, todo)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func DeleteTodo(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	todo, _ := r.URL.Query()["id"]
+	todo_id, _ := strconv.Atoi(todo[0])
+    fmt.Println(" DELETE TODO ID")
+    response := modules.DeleteTodo(user_id, todo_id)
+    w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func DeleteTech(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	todo, _ := r.URL.Query()["todo_id"]
+	todo_id, _ := strconv.Atoi(todo[0])
+	tech, _ := r.URL.Query()["id"]
+	tech_id, _ := strconv.Atoi(tech[0])
+	response := modules.DeleteTodoTech(user_id, todo_id, tech_id)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func DeleteSite(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	todo, _ := r.URL.Query()["todo_id"]
+	todo_id, _ := strconv.Atoi(todo[0])
+	site, _ := r.URL.Query()["id"]
+	site_id, _ := strconv.Atoi(site[0])
+	response := modules.DeleteTodoSite(user_id, todo_id, site_id)
 	w.Header().Set("Content-Type", "application/json")
 	res, _ := json.Marshal(response)
 	w.Write(res)

@@ -5,6 +5,10 @@ import (
     "log"
     "fmt"
     "time"
+    "encoding/base64"
+    "os"
+    "strconv"
+    "io/ioutil"
 
     _ "github.com/lib/pq"
 )
@@ -35,6 +39,7 @@ type Todo struct {
     Member       string   `json:"member"`
     Sites        []Sites  `json:"sites"`
     Images       []string `json:"images"`
+    ImgNum       int      `json:"img_num"`
 }
 
 type UserInfo struct {
@@ -88,6 +93,7 @@ func PostBaseSites(user_id int, sites []Sites) () {
             log.Println(err)
         }
     }
+    Db.Close()
 }
 
 
@@ -126,6 +132,7 @@ func PostStudents(user_type string, user_id int, student Students) (bool) {
             }
         }
     }
+    Db.Close()
     return true
 }
 
@@ -194,6 +201,7 @@ func CreateUser(login_id string, password string, user_type string) (user_info N
         user_info.Status = false
     }
     LoginedAt(user_info.UserId)
+    Db.Close()
     return
 }
  
@@ -204,6 +212,7 @@ func LoginedAt(user_id int) () {
     if err != nil {
         log.Println(err)
     }
+    Db.Close()
 }
 
 func GetTodoSites(user_id int, todo_id int) (sites []Sites) {
@@ -237,6 +246,17 @@ func PostTodoSites(user_id int, todo_id int, sites []Sites) {
     if err != nil {
         log.Println(err)
     }
+    Db.Close()
+}
+
+func DeleteTodoSite(user_id int, todo_id int, site_id int) bool {
+    Db := OpenDB()
+    err := Db.QueryRow("DELETE FROM TodoSites WHERE user_id=$1 AND todo_id=$2 AND id=$3", user_id, todo_id, site_id)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
 }
 
 func GetTodoTech(user_id int, todo_id int) (technology []string) {
@@ -250,6 +270,7 @@ func GetTodoTech(user_id int, todo_id int) (technology []string) {
         rows.Scan(&tech)
         technology = append(technology, tech)
     }
+    Db.Close()
     return
 }
 
@@ -267,22 +288,58 @@ func PostTodoTech(user_id int, todo_id int, techs []string) {
     if err != nil {
         log.Println(err)
     }
+    Db.Close()
+}
+
+func DeleteTodoTech(user_id int, todo_id int, tech_id int) bool {
+    Db := OpenDB()
+    err := Db.QueryRow("DELETE FROM TodoTech WHERE user_id=$1 AND todo_id=$2 AND id=$3", user_id, todo_id, tech_id)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}
+
+func GetTodoImages(user_id int, todo_id int, img_length int) (images []string) {
+    for i := 1; i<=img_length; i++ {
+        file, _ := os.Open("./images/student/"+strconv.Itoa(user_id)+"/"+strconv.Itoa(todo_id)+"/"+strconv.Itoa(i)+".jpg")
+        file_data, _ := ioutil.ReadAll(file)
+        imgEnc := base64.StdEncoding.EncodeToString(file_data)
+        images = append(images, "data:image/png;base64,"+imgEnc)
+    }
+    return
+}
+
+func PostTodoImages(user_id int, todo_id int, images []string) bool {
+    for i, img := range images {
+        data, _ := base64.StdEncoding.DecodeString(img)
+        if err := os.MkdirAll("./images/student/"+strconv.Itoa(user_id)+"/"+strconv.Itoa(todo_id), 0777); err != nil {
+            fmt.Println(err)
+        }
+        file, _ := os.Create("./images/student/"+strconv.Itoa(user_id)+"/"+strconv.Itoa(todo_id)+"/"+strconv.Itoa(i+1)+".jpg")
+        defer file.Close()
+
+        file.Write(data)
+        
+    }
+    return true
 }
 
 func GetTodos(user_id int) (todos []Todo) {
     Db := OpenDB()
     fmt.Print(user_id) 
     fmt.Println(" GET TODOS USER ID")
-    rows, errs := Db.Query("SELECT id, title, detail, motivation, period, member FROM Todos WHERE user_id=$1", user_id)
+    rows, errs := Db.Query("SELECT id, title, detail, motivation, period, member, img_num FROM Todos WHERE user_id=$1", user_id)
     if errs != nil {
         log.Println(errs)
     }
     for rows.Next() {
         var todo Todo
-        rows.Scan(&todo.Id, &todo.Title, &todo.Detail, &todo.Motivation, &todo.Period, &todo.Member)
+        rows.Scan(&todo.Id, &todo.Title, &todo.Detail, &todo.Motivation, &todo.Period, &todo.Member, &todo.ImgNum)
         todo.Technologies = GetTodoTech(user_id, todo.Id)
         todo.Sites = GetTodoSites(user_id, todo.Id)
-        todo.Images = append(todo.Images, "a")
+        todo.Images = GetTodoImages(user_id, todo.Id, todo.ImgNum)
         todos = append(todos, todo)
     }
     fmt.Print(todos)
@@ -312,20 +369,26 @@ func PostTodos(user_id int, todo Todo) (response bool) {
             log.Println(err)
         }
         id = id +1
-        _, err = Db.Exec("INSERT INTO Todos (user_id, id, title, detail, motivation, period, member) VALUES ($1,$2,$3,$4,$5,$6,$7)", user_id, id, todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member)
+        fmt.Print(id)
+        fmt.Println(" POST TODO ID")
+        _, err = Db.Exec("INSERT INTO Todos (user_id, id, title, detail, motivation, period, member, img_num) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)", user_id, id, todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member, todo.ImgNum)
         if err != nil {
             log.Println(err)
         }
         response = true
     } else {
         id = todo.Id
-        _, err := Db.Exec("UPDATE Todos SET title=$1, detail=$2, motivation=$3, period=$4, member=$5 WHERE user_id=$6 AND id=$7", todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member, user_id, id)
+        fmt.Print(todo)
+        fmt.Println(" POST TODOS")
+        _, err := Db.Exec("UPDATE Todos SET title=$1, detail=$2, motivation=$3, period=$4, member=$5, img_num=$6 WHERE user_id=$7 AND id=$8", todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member, todo.ImgNum, user_id, id)
         if err != nil {
             log.Println(err)
         }
         response = false
     }
+    Db.Close()
     PostTodoTech(user_id, id, todo.Technologies)
     PostTodoSites(user_id, id, todo.Sites)
+    PostTodoImages(user_id, id, todo.Images)
     return 
 }
