@@ -38,7 +38,7 @@ export default class TodoEdit extends Component {
           sites: [],
           technologies: [],
           images: [],
-          img_num: 0,
+          img_num: '',
           period: '',
           member: '',
           liked: 0,
@@ -115,8 +115,16 @@ export default class TodoEdit extends Component {
 class TodoEditItem extends Component {
   constructor(props) {
     super(props)
-    // if (this.props.todo.sites === null) this.props.todo.sites = []
-    // if (this.props.todo.technologies === null) this.props.todo.technologies = []
+    if (this.props.todo.sites === null) this.props.todo.sites = []
+    if (this.props.todo.technologies === null) this.props.todo.technologies = []
+    if (this.props.todo.images === null) this.props.todo.images = []
+    // else {
+    //   this.props.todo.images.map( image => {
+    //     let img = image.split(',')
+    //     this.props.imgs.push(image[1])
+    //   })
+    //   this.setState({img: imgs})
+    // }
     this.state = {
       todo: this.props.todo,
       new_site: {
@@ -133,6 +141,15 @@ class TodoEditItem extends Component {
     if (nextProps.todo.sites === null) nextProps.todo.sites = []
     if (nextProps.todo.technologies === null) nextProps.todo.technologies = []
     if (nextProps.todo.images === null) nextProps.todo.images = []
+    else {
+      let imgs = this.state.img
+      nextProps.todo.images.map( image => {
+        let img = image.split(',')
+        console.log(img[0])
+        imgs.push(img[1])
+      })
+      this.setState({img: imgs})
+    }
     this.setState({todo: nextProps.todo})
   }
   handleChange = name => event => {
@@ -173,6 +190,7 @@ class TodoEditItem extends Component {
     this.setState({img: imgs})
   }
   handleChangeFile = event => {
+    console.log(this.state.img)
     let createObjectURL = (window.URL || window.webkitURL).createObjectURL || window.createObjectURL
     // ①イベントからfileの配列を受け取る
     let files = event.target.files
@@ -233,6 +251,21 @@ class TodoEditItem extends Component {
   deleteImages = event => {
     let todo = this.state.todo
     todo.images.splice(this.state.delete_i, 1)
+    this.state.img.splice(this.state.delete_i, 1)
+    console.log(todo.images.length)
+    todo.img_num--
+    const path = window.location.pathname
+    const paths = path.split("/")
+    axios
+      .delete("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos/image", {
+        params: {
+          todo_id: this.state.todo.id,
+          id: this.state.delete_i+1
+        }
+      })
+      .then(results => {
+        console.log(results)
+      })
     this.setState({ todo: todo })
     this.setState({ open: false })
   }

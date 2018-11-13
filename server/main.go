@@ -39,6 +39,7 @@ func main() {
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", PostTodos).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/tech", DeleteTech).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/site", DeleteSite).Methods("DELETE", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/image", DeleteImage).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/base", PostBase).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", PostIcon).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", GetIcon).Methods("GET")
@@ -199,6 +200,17 @@ func DeleteSite(w http.ResponseWriter, r *http.Request) {
 	site, _ := r.URL.Query()["id"]
 	site_id, _ := strconv.Atoi(site[0])
 	response := modules.DeleteTodoSite(user_id, todo_id, site_id)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func DeleteImage(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	todo_id, _ := r.URL.Query()["todo_id"]
+	img_id, _ := r.URL.Query()["id"]
+	fmt.Println(img_id[0] + " DELETE IMAGE ID")
+	response := modules.DeleteTodoImage(id["userId"], todo_id[0], img_id[0])
 	w.Header().Set("Content-Type", "application/json")
 	res, _ := json.Marshal(response)
 	w.Write(res)

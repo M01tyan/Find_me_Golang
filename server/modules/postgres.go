@@ -77,8 +77,8 @@ func GetBaseSites(user_id int) (sites []Sites){
         rows.Scan(&site.URL_TITLE, &site.URL)
         sites = append(sites, site)
     }
-    fmt.Print(sites)
-    fmt.Println(" GET BASE SITES")
+    // fmt.Print(sites)
+    // fmt.Println(" GET BASE SITES")
     Db.Close()
     return 
 }
@@ -86,8 +86,8 @@ func GetBaseSites(user_id int) (sites []Sites){
 func PostBaseSites(user_id int, sites []Sites) () {
     Db := OpenDB()
     for i, site := range sites {
-        fmt.Print(site)
-        fmt.Println(" GET SITE")
+        // fmt.Print(site)
+        // fmt.Println(" GET SITE")
         _, err := Db.Exec("INSERT INTO BaseSites (user_id, id, url_title, url) VALUES ($1,$2,$3,$4)",user_id, i+1, site.URL_TITLE, site.URL)
         if err != nil {
             log.Println(err)
@@ -105,8 +105,8 @@ func GetStudents(user_id int) (student Students){
         log.Println(err)
     }
     student.SITES = sites
-    fmt.Print(student)
-    fmt.Println(" GET STUDENT")
+    // fmt.Print(student)
+    // fmt.Println(" GET STUDENT")
     Db.Close()
     return
 }
@@ -142,15 +142,15 @@ func GetUsers(login_id string, password string) (user_info UserInfo) {
     if err != nil {
         log.Println(err)
     }
-    fmt.Print(user_info.UserId)
-    fmt.Println(" GET USERS ID")
+    // fmt.Print(user_info.UserId)
+    // fmt.Println(" GET USERS ID")
     if(user_info.UserId != 0) {
         err = Db.QueryRow("SELECT furigana FROM Students WHERE user_id=$1", user_info.UserId).Scan(&user_info.Furigana)
         if err != nil {
             log.Println(err)
         }
-        fmt.Print(user_info.Furigana)
-        fmt.Println(" GET FURIGANA")
+        // fmt.Print(user_info.Furigana)
+        // fmt.Println(" GET FURIGANA")
         user_info.Status = true
         LoginedAt(user_info.UserId)
     } else {
@@ -168,8 +168,8 @@ func CheckUsers(login_id string, password string) (bool) {
         log.Println(err)
     }
     Db.Close()
-    fmt.Print(user_id)
-    fmt.Println(" CHECK USERS ")
+    // fmt.Print(user_id)
+    // fmt.Println(" CHECK USERS ")
     if(user_id==0) {
         return false
     } else {
@@ -186,8 +186,8 @@ func CreateUser(login_id string, password string, user_type string) (user_info N
             log.Println(err)
         }
         user_info.UserId++
-        fmt.Print(user_info.UserId)
-        fmt.Println(" CREATE NEW USER ID")
+        // fmt.Print(user_info.UserId)
+        // fmt.Println(" CREATE NEW USER ID")
         _, err = Db.Exec("INSERT INTO Users (id, user_type) VALUES ($1,$2)",user_info.UserId, user_info.UserType)
         if err != nil {
             log.Println(err)
@@ -226,8 +226,8 @@ func GetTodoSites(user_id int, todo_id int) (sites []Sites) {
         rows.Scan(&site.URL_TITLE, &site.URL)
         sites = append(sites, site)
     }
-    fmt.Print(sites)
-    fmt.Println(" GET TODO SITES")
+    // fmt.Print(sites)
+    // fmt.Println(" GET TODO SITES")
     Db.Close()
     return
 }
@@ -326,10 +326,39 @@ func PostTodoImages(user_id int, todo_id int, images []string) bool {
     return true
 }
 
+func DeleteTodoImage(user_id string, todo_id string, img_id string) bool {
+    if err := os.Remove("./images/student/"+user_id+"/"+todo_id+"/"+img_id+".jpg"); err != nil {
+        fmt.Println(err)
+    }
+    i, _ := strconv.Atoi(img_id)
+    var j int
+    for j = i+1; true; j++ {
+        _, err := os.Stat("./images/student/"+user_id+"/"+todo_id+"/"+strconv.Itoa(j)+".jpg")
+        if err != nil {
+            break;
+            fmt.Println("LOOP BREAK")
+        }
+        if err := os.Rename("./images/student/"+user_id+"/"+todo_id+"/"+strconv.Itoa(j)+".jpg", "./images/student/"+user_id+"/"+todo_id+"/"+strconv.Itoa(j-1)+".jpg"); err != nil {
+            fmt.Println(err)
+        }
+    }
+    fmt.Println(user_id + " " + todo_id + " DELETE TODO")
+    user, _ := strconv.Atoi(user_id)
+    todo, _ := strconv.Atoi(todo_id)
+    fmt.Println(strconv.Itoa(j) + " DELETE TODO jj")
+    Db := OpenDB()
+    _, err := Db.Exec("UPDATE Todos SET img_num=$1 WHERE user_id=$2 AND id=$3", j-2, user, todo)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}
+
 func GetTodos(user_id int) (todos []Todo) {
     Db := OpenDB()
-    fmt.Print(user_id) 
-    fmt.Println(" GET TODOS USER ID")
+    // fmt.Print(user_id) 
+    // fmt.Println(" GET TODOS USER ID")
     rows, errs := Db.Query("SELECT id, title, detail, motivation, period, member, img_num FROM Todos WHERE user_id=$1", user_id)
     if errs != nil {
         log.Println(errs)
@@ -342,8 +371,8 @@ func GetTodos(user_id int) (todos []Todo) {
         todo.Images = GetTodoImages(user_id, todo.Id, todo.ImgNum)
         todos = append(todos, todo)
     }
-    fmt.Print(todos)
-    fmt.Println(" GET TODOS")
+    // fmt.Print(todos)
+    // fmt.Println(" GET TODOS")
     Db.Close()
     return 
 }
@@ -369,8 +398,8 @@ func PostTodos(user_id int, todo Todo) (response bool) {
             log.Println(err)
         }
         id = id +1
-        fmt.Print(id)
-        fmt.Println(" POST TODO ID")
+        // fmt.Print(id)
+        // fmt.Println(" POST TODO ID")
         _, err = Db.Exec("INSERT INTO Todos (user_id, id, title, detail, motivation, period, member, img_num) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)", user_id, id, todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member, todo.ImgNum)
         if err != nil {
             log.Println(err)
@@ -378,8 +407,8 @@ func PostTodos(user_id int, todo Todo) (response bool) {
         response = true
     } else {
         id = todo.Id
-        fmt.Print(todo)
-        fmt.Println(" POST TODOS")
+        // fmt.Print(todo)
+        // fmt.Println(" POST TODOS")
         _, err := Db.Exec("UPDATE Todos SET title=$1, detail=$2, motivation=$3, period=$4, member=$5, img_num=$6 WHERE user_id=$7 AND id=$8", todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member, todo.ImgNum, user_id, id)
         if err != nil {
             log.Println(err)
