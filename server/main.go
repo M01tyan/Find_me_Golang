@@ -35,6 +35,9 @@ func main() {
     r.HandleFunc("/api/users/signUp", SignUp).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/base", GetBase).Methods("GET")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", GetTodos).Methods("GET")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", GetSkills).Methods("GET")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", PatchSkill).Methods("PATCH", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", PostSkill).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", DeleteTodo).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", PostTodos).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/tech", DeleteTech).Methods("DELETE", "OPTIONS")
@@ -45,7 +48,7 @@ func main() {
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", GetIcon).Methods("GET")
 
     routerWithCORS := handlers.CORS(
-    	handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT"}),
+    	handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT", "PATCH"}),
     	handlers.AllowedOrigins([]string{"http://localhost:3000"}),
 		handlers.AllowedHeaders([]string{"Content-Type", "application/json", ""}),
     )(r)
@@ -211,6 +214,45 @@ func DeleteImage(w http.ResponseWriter, r *http.Request) {
 	img_id, _ := r.URL.Query()["id"]
 	fmt.Println(img_id[0] + " DELETE IMAGE ID")
 	response := modules.DeleteTodoImage(id["userId"], todo_id[0], img_id[0])
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func GetSkills(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.GetSkills(user_id)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func PostSkill(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+    var skill modules.Skill
+    error := decoder.Decode(&skill)
+    if error != nil {
+        w.Write([]byte("json decode error" + error.Error() + "\n"))
+    }
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.PostSkill(user_id, skill)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func PatchSkill(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+    var skill modules.Skill
+    error := decoder.Decode(&skill)
+    if error != nil {
+        w.Write([]byte("json decode error" + error.Error() + "\n"))
+    }
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.PatchSkill(user_id, skill)
 	w.Header().Set("Content-Type", "application/json")
 	res, _ := json.Marshal(response)
 	w.Write(res)

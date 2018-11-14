@@ -42,6 +42,13 @@ type Todo struct {
     ImgNum       int      `json:"img_num"`
 }
 
+type Skill struct {
+    Id        int     `json:"id"`
+    Language  string  `json:"language"`
+    Level     int     `json:"level"`
+    Comment   string  `json:"comment"`
+}
+
 type UserInfo struct {
     UserId      int     `json:"user_id"`
     UserType    string  `json:"user_type"`
@@ -382,6 +389,9 @@ func DeleteTodo(user_id int, id int) bool {
     _, err := Db.Exec("DELETE FROM TodoSites WHERE user_id=$1 AND todo_id=$2", user_id, id)
     _, err = Db.Exec("DELETE FROM TodoTech WHERE user_id=$1 AND todo_id=$2", user_id, id)
     _, err = Db.Exec("DELETE FROM Todos WHERE user_id=$1 AND id=$2", user_id, id)
+    if err = os.RemoveAll("./images/student/"+strconv.Itoa(user_id)+"/"+strconv.Itoa(id)); err != nil {
+        fmt.Println(err)
+    }
     if err != nil {
         log.Println(err)
     }
@@ -420,4 +430,41 @@ func PostTodos(user_id int, todo Todo) (response bool) {
     PostTodoSites(user_id, id, todo.Sites)
     PostTodoImages(user_id, id, todo.Images)
     return 
+}
+
+func GetSkills(user_id int) (skills []Skill) {
+    Db := OpenDB()
+    rows, errs := Db.Query("SELECT id, language, level, comment FROM Skills WHERE user_id=$1", user_id)
+    if errs != nil {
+        log.Println(errs)
+    }
+    for rows.Next() {
+        var skill Skill
+        rows.Scan(&skill.Id, &skill.Language, &skill.Level, &skill.Comment)
+        skills = append(skills, skill)
+    }
+    // fmt.Print(todos)
+    // fmt.Println(" GET TODOS")
+    Db.Close()
+    return 
+}
+
+func PostSkill(user_id int, skill Skill) bool {
+    Db := OpenDB()
+    _, err := Db.Exec("INSERT INTO Skills (user_id,id,language,level,comment) VALUES ($1,$2,$3,$4,$5)", user_id, skill.Id, skill.Language, skill.Level, skill.Comment)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}
+
+func PatchSkill(user_id int, skill Skill) bool {
+    Db := OpenDB()
+    _, err := Db.Exec("UPDATE Skills SET language=$1, level=$2, comment=$3 WHERE user_id=$4 AND id=$5", skill.Language, skill.Level, skill.Comment, user_id, skill.Id)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
 }

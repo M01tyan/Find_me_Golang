@@ -76,6 +76,7 @@ export default class TodoEdit extends Component {
       .then(results => {
         let message = results.data
         if(message === null) message = []
+          console.log(message)
         this.setState({todos: message})
       })
   }
