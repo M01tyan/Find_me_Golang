@@ -38,6 +38,7 @@ func main() {
     r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", GetSkills).Methods("GET")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", PatchSkill).Methods("PATCH", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", PostSkill).Methods("POST", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", DeleteSkill).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", DeleteTodo).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", PostTodos).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/tech", DeleteTech).Methods("DELETE", "OPTIONS")
@@ -253,6 +254,17 @@ func PatchSkill(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)
 	user_id, _ := strconv.Atoi(id["userId"])
 	response := modules.PatchSkill(user_id, skill)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func DeleteSkill(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	skill, _ := r.URL.Query()["id"]
+	skill_id, _ := strconv.Atoi(skill[0])
+	response := modules.DeleteSkill(user_id, skill_id)
 	w.Header().Set("Content-Type", "application/json")
 	res, _ := json.Marshal(response)
 	w.Write(res)

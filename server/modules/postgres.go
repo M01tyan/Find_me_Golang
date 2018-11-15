@@ -468,3 +468,13 @@ func PatchSkill(user_id int, skill Skill) bool {
     Db.Close()
     return true
 }
+
+func DeleteSkill(user_id int, id int) bool {
+    Db := OpenDB()
+    _, err := Db.Exec("DELETE FROM Skills WHERE user_id=$1 AND id=$2", user_id, id)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}

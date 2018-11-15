@@ -133,8 +133,18 @@ class SkillEditItem extends Component {
 		skill.level = j + 1
 		this.setState({skill: skill})
 	}
-	deleteSkill = (i) => event => {
-		this.props.deleteSkill(i)
+	deleteSkill = event => {
+		const path = window.location.pathname
+    const paths = path.split("/")
+    axios
+      .delete("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
+      	params: {
+      		id: this.state.skill.id
+      	}
+      })
+      .then(results => {
+				this.props.deleteSkill(this.props.key)
+      })
 	}
 	changeSkills = event => {
 		this.props.changeSkills(this.state.skill)
@@ -175,73 +185,8 @@ class SkillEditItem extends Component {
         </TableCell>
         <TableCell>
         	<IconButton aria-label="Delete" >
-            <DeleteIcon onClick={this.props.deleteSkill}/>
+            <DeleteIcon onClick={this.deleteSkill}/>
           </IconButton>
-        </TableCell>
-      </TableRow>
-		)
-	}
-}
-
-class NewSkillEdit extends Component {
-	constructor(props) {
-		super(props)
-		this.state = {
-			new_skill: {
-				language: '',
-				lebel: 0,
-				comment: '',
-			},
-		}
-	}
-	changeSkill = (i, j) => {
-		let new_skill = this.state.new_skill
-		new_skill.lebel = j + 1
-		this.setState({new_skill: new_skill})
-	}
-	handleChange = name => event => {
-		let new_skill = this.state.new_skill
-		new_skill[name] = event.target.value
-		this.setState({new_skill: new_skill})
-	}
-	handleSkillSubmit = event => {
-		if(this.state.new_skill.language !== '' && this.state.new_skill.lebel > 0 ){
-			this.props.pushNewSkill(this.state.new_skill)
-			this.setState({new_skill: {language: '', lebel: 0, comment: ''}})
-		}
-	}
-	render() {
-		return (
-			<TableRow>
-        <TableCell component="th" scope="row" className="edit-form-skill-language">
-        	<TextField
-            required
-            id="standard-required"
-            label="Language"
-            type="search"
-            value={this.state.new_skill.language}
-            onChange={this.handleChange('language')}
-            className="edit-form-skill-text-field"
-            margin="normal"
-          />
-        </TableCell>
-        <TableCell className="edit-form-skill-star"><SkillStar id={0} skill={this.state.new_skill.lebel} changeSkill={this.changeSkill} /></TableCell>
-        <TableCell className="edit-form-skill-comment">
-        	<TextField
-            required
-            id="standard-required"
-            label="Comment"
-            type="search"
-            value={this.state.new_skill.comment}
-            onChange={this.handleChange('comment')}
-            className="edit-form-skill-text-field"
-            margin="normal"
-          />
-        </TableCell>
-        <TableCell>
-        	<Button variant="outlined" color="primary" onClick={this.handleSkillSubmit}>
-            POST
-          </Button>
         </TableCell>
       </TableRow>
 		)
