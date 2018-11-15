@@ -39,6 +39,11 @@ func main() {
     r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", PatchSkill).Methods("PATCH", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", PostSkill).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/skills", DeleteSkill).Methods("DELETE", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/histories", GetHistories).Methods("GET")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/histories", PostHistory).Methods("POST", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/histories", DeleteHistory).Methods("DELETE", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/career", GetCareer).Methods("GET")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/career", PostCareer).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", DeleteTodo).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", PostTodos).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/tech", DeleteTech).Methods("DELETE", "OPTIONS")
@@ -87,8 +92,8 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
 func GetBase(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	id := mux.Vars(r)
-	fmt.Print(strconv.Atoi(id["userId"]))
-	fmt.Println(" GET BASE PARAMS")
+	// fmt.Print(strconv.Atoi(id["userId"]))
+	// fmt.Println(" GET BASE PARAMS")
 	user_id, _ := strconv.Atoi(id["userId"])
 	response := modules.GetStudents(user_id)
 	res, _ := json.Marshal(response)
@@ -105,8 +110,8 @@ func PostBase(w http.ResponseWriter, r *http.Request) {
     }
 	id := mux.Vars(r)
 	user_id, _ := strconv.Atoi(id["userId"])
-	fmt.Print(user_id)
-	fmt.Println(" GET POST BASE USER ID")
+	// fmt.Print(user_id)
+	// fmt.Println(" GET POST BASE USER ID")
 	response := modules.PostStudents(id["userType"], user_id, student)
 	res, _ := json.Marshal(response)
 	w.Write(res)
@@ -265,6 +270,65 @@ func DeleteSkill(w http.ResponseWriter, r *http.Request) {
 	skill, _ := r.URL.Query()["id"]
 	skill_id, _ := strconv.Atoi(skill[0])
 	response := modules.DeleteSkill(user_id, skill_id)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func GetHistories(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.GetHistories(user_id)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func PostHistory(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+    var history modules.History
+    error := decoder.Decode(&history)
+    if error != nil {
+        w.Write([]byte("json decode error" + error.Error() + "\n"))
+    }
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.PostHistory(user_id, history)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func DeleteHistory(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	history, _ := r.URL.Query()["id"]
+	history_id, _ := strconv.Atoi(history[0])
+	response := modules.DeleteHistory(user_id, history_id)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func GetCareer(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.GetCareer(user_id)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func PostCareer(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+    var career modules.Career
+    error := decoder.Decode(&career)
+    if error != nil {
+        w.Write([]byte("json decode error" + error.Error() + "\n"))
+    }
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.PostCareer(user_id, career)
 	w.Header().Set("Content-Type", "application/json")
 	res, _ := json.Marshal(response)
 	w.Write(res)

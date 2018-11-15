@@ -102,10 +102,10 @@ export default class SkillEdit extends Component {
 	        <TableBody>
 	          {this.state.skills.map((skill, i) => {
 	          	return (
-	          		<SkillEditItem skill={skill} deleteSkill={this.deleteSkill(i)} changeSkills={this.updateSkill} key={i} />
+	          		<SkillEditItem skill={skill} deleteSkill={this.deleteSkill(i)} changeSkills={this.updateSkill} value={i} key={i} />
 	          	)
 	          })}
-	          <SkillEditItem skill={this.state.new_skill} changeSkills={this.pushNewSkill} />
+	          <SkillEditItem skill={this.state.new_skill} changeSkills={this.pushNewSkill} value={null} />
 	        </TableBody>
 	      </Table>
 	    </div>
@@ -143,7 +143,7 @@ class SkillEditItem extends Component {
       	}
       })
       .then(results => {
-				this.props.deleteSkill(this.props.key)
+				this.props.deleteSkill(this.props.value)
       })
 	}
 	changeSkills = event => {
@@ -180,7 +180,7 @@ class SkillEditItem extends Component {
         </TableCell>
         <TableCell>
         	<Button variant="outlined" color="primary" onClick={this.changeSkills}>
-            POST
+            {this.props.value == null ? "POST" : "UPDATE"}
           </Button>
         </TableCell>
         <TableCell>

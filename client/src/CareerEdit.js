@@ -13,16 +13,46 @@ export default class SkillEdit extends Component {
 		this.state = {
 			career: {
 				now: '',
-				near_future: '',
-				goal: '',
+				near: '',
+				future: '',
 			},
 			textFieldSize: window.parent.screen.width,
 		}
+	}
+	componentDidMount() {
+		const path = window.location.pathname
+    const paths = path.split("/")
+    axios
+      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/career", {
+        headers: {
+          'Content-Type': 'application/json',
+      }})
+      .then(results => {
+        let message = results.data
+        this.setState({career: message})
+      })
 	}
 	handleChange = name => event => {
 		let { career } = this.state
 		career[name] = event.target.value
 		this.setState({career: career})
+	}
+	handleChangeSubmit = () => {
+		const path = window.location.pathname
+    const paths = path.split("/")
+    axios
+      .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/career", {
+      	now: this.state.career.now,
+      	near: this.state.career.near,
+      	future: this.state.career.future
+      }, {
+        headers: {
+          'Content-Type': 'application/json',
+      }})
+      .then(results => {
+        let message = results.data
+        console.log(message)
+      })
 	}
   render() {
   	return (
@@ -102,7 +132,7 @@ export default class SkillEdit extends Component {
           </div>
         </Card>
         <div className="edit-form-career-button">
-	        <Button variant="outlined" color="primary" onClick={console.log(window.parent.screen.width)}>
+	        <Button variant="outlined" color="primary" onClick={this.handleChangeSubmit}>
 	          POST
 	        </Button>
 	      </div>

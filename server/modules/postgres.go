@@ -49,6 +49,16 @@ type Skill struct {
     Comment   string  `json:"comment"`
 }
 
+type History struct {
+    Id      int     `json:"id"`
+    Content string  `json:"content"`
+}
+
+type Career struct {
+    Now       string  `json:"now"`
+    Near      string  `json:"near"`
+    Future    string  `json:"future"`
+}
 type UserInfo struct {
     UserId      int     `json:"user_id"`
     UserType    string  `json:"user_type"`
@@ -472,6 +482,67 @@ func PatchSkill(user_id int, skill Skill) bool {
 func DeleteSkill(user_id int, id int) bool {
     Db := OpenDB()
     _, err := Db.Exec("DELETE FROM Skills WHERE user_id=$1 AND id=$2", user_id, id)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}
+
+func GetHistories(user_id int) (histories []History) {
+    Db := OpenDB()
+    rows, errs := Db.Query("SELECT id, content FROM Histories WHERE user_id=$1", user_id)
+    if errs != nil {
+        log.Println(errs)
+    }
+    for rows.Next() {
+        var history History
+        rows.Scan(&history.Id, &history.Content)
+        histories = append(histories, history)
+    }
+    Db.Close()
+    return
+}
+
+func PostHistory(user_id int, history History) bool {
+    Db := OpenDB()
+    _, err := Db.Exec("INSERT INTO Histories (user_id,id,content) VALUES ($1,$2,$3)", user_id, history.Id, history.Content)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}
+
+func DeleteHistory(user_id int, id int) bool {
+    Db := OpenDB()
+    _, err := Db.Exec("DELETE FROM Histories WHERE user_id=$1 AND id=$2", user_id, id)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}
+
+func GetCareer(user_id int) (career Career) {
+    Db := OpenDB()
+    err := Db.QueryRow("SELECT now, near, future from Careers WHERE user_id=$1", user_id).Scan(&career.Now, &career.Near, &career.Future)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return
+}
+
+func PostCareer(user_id int, career Career) bool {
+    Db := OpenDB()
+    var id int
+    err := Db.QueryRow("SELECT user_id from Careers WHERE user_id=$1", user_id).Scan(&id)
+    if id == 0 {
+        _, err = Db.Exec("INSERT INTO Careers (user_id,now,near,future) VALUES ($1,$2,$3,$4)", user_id, career.Now, career.Near, career.Future)
+    } else {
+        _, err = Db.Exec("UPDATE Careers SET now=$1, near=$2, future=$3 WHERE user_id=$4", career.Now, career.Near, career.Future, user_id)
+    }
     if err != nil {
         log.Println(err)
     }
