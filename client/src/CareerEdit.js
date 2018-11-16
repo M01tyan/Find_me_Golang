@@ -7,7 +7,7 @@ import Button from '@material-ui/core/Button'
 import axios from 'axios'
 import './Edits.css'
 
-export default class SkillEdit extends Component {
+export default class CareerEdit extends Component {
 	constructor(props) {
 		super(props)
 		this.state = {
@@ -16,7 +16,7 @@ export default class SkillEdit extends Component {
 				near: '',
 				future: '',
 			},
-			textFieldSize: window.parent.screen.width,
+			textFieldSize: Math.floor(window.parent.screen.height/50),
 		}
 	}
 	componentDidMount() {
@@ -71,7 +71,7 @@ export default class SkillEdit extends Component {
 			          onChange={this.handleChange('now')}
 			          fullWidth
 			          multiline
-          			rows="15"
+          			rows={this.state.textFieldSize}
 			          margin="normal"
 			          className="edit-form-career-text-field"
 			          variant="outlined"
@@ -96,7 +96,7 @@ export default class SkillEdit extends Component {
 			          onChange={this.handleChange('near')}
 			          fullWidth
 			          multiline
-          			rows="15"
+          			rows={this.state.textFieldSize}
 			          margin="normal"
 			          className="edit-form-career-text-field"
 			          variant="outlined"
@@ -121,7 +121,7 @@ export default class SkillEdit extends Component {
 			          onChange={this.handleChange('future')}
 			          fullWidth
 			          multiline
-          			rows="15"
+          			rows={this.state.textFieldSize}
 			          margin="normal"
 			          variant="outlined"
 			          InputLabelProps={{

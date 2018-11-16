@@ -59,6 +59,11 @@ type Career struct {
     Near      string  `json:"near"`
     Future    string  `json:"future"`
 }
+
+type SelfPR struct {
+    Selfpr   string  `json:"selfpr"`
+}
+
 type UserInfo struct {
     UserId      int     `json:"user_id"`
     UserType    string  `json:"user_type"`
@@ -177,7 +182,7 @@ func GetUsers(login_id string, password string) (user_info UserInfo) {
     return
 }
 
-func CheckUsers(login_id string, password string) (bool) {
+func CheckUsers(login_id string, password string) bool {
     Db := OpenDB()
     var user_id int
     err := Db.QueryRow("SELECT user_id from Auth WHERE login_id=$1 AND password=$2", login_id, password).Scan(&user_id)
@@ -214,11 +219,11 @@ func CreateUser(login_id string, password string, user_type string) (user_info N
             log.Println(err)
         }
         user_info.Status = true
+        Db.Close()
     } else {
         user_info.Status = false
     }
     LoginedAt(user_info.UserId)
-    Db.Close()
     return
 }
  
@@ -542,6 +547,32 @@ func PostCareer(user_id int, career Career) bool {
         _, err = Db.Exec("INSERT INTO Careers (user_id,now,near,future) VALUES ($1,$2,$3,$4)", user_id, career.Now, career.Near, career.Future)
     } else {
         _, err = Db.Exec("UPDATE Careers SET now=$1, near=$2, future=$3 WHERE user_id=$4", career.Now, career.Near, career.Future, user_id)
+    }
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return true
+}
+
+func GetSelfPR(user_id int) (selfpr string) {
+    Db := OpenDB()
+    err := Db.QueryRow("SELECT content from Selfprs WHERE user_id=$1", user_id).Scan(&selfpr)
+    if err != nil {
+        log.Println(err)
+    }
+    Db.Close()
+    return
+}
+
+func PostSelfPR(user_id int, selfpr string) bool {
+    Db := OpenDB()
+    var id int
+    err := Db.QueryRow("SELECT user_id from Selfprs WHERE user_id=$1", user_id).Scan(&id)
+    if id == 0 {
+        _, err = Db.Exec("INSERT INTO Selfprs (user_id,content) VALUES ($1,$2)", user_id, selfpr)
+    } else {
+        _, err = Db.Exec("UPDATE Selfprs SET content=$1 WHERE user_id=$2", selfpr, user_id)
     }
     if err != nil {
         log.Println(err)

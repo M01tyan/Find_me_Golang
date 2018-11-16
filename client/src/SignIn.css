@@ -11,11 +11,19 @@ div.sign-in {
 	align-items: center;
 	padding: 20px;
 }
-.sing-in-form {
+.sign-in-form {
 	width: 100%;
 	display: flex;
 	flex-direction: column;
 
+}
+.sign-up-form-error {
+	font-size: 0.5rem;
+	color: #dc143c;
+	margin-bottom: 0;
+}
+div.sign-in-form-password {
+	margin-top: 0;
 }
 
 

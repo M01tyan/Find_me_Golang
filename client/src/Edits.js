@@ -19,6 +19,7 @@ import TodoEdit from './TodoEdit'
 import SkillEdit from './SkillEdit'
 import HistoryEdit from './HistoryEdit'
 import CareerEdit from './CareerEdit'
+import SelfPREdit from './SelfPREdit'
 import './Edits.css'
 
 export default class Edits extends Component {
@@ -52,7 +53,7 @@ export default class Edits extends Component {
         { value === 2 && <SkillEdit /> }
         { value === 3 && <HistoryEdit /> }
         { value === 4 && <CareerEdit /> }
-        { value === 5 && <BaseEdit /> }
+        { value === 5 && <SelfPREdit /> }
       </div>
     )
   }

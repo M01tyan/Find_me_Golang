@@ -44,6 +44,8 @@ func main() {
     r.HandleFunc("/api/users/{userType}/{userId}/edits/histories", DeleteHistory).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/career", GetCareer).Methods("GET")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/career", PostCareer).Methods("POST", "OPTIONS")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/selfpr", GetSelfPR).Methods("GET")
+    r.HandleFunc("/api/users/{userType}/{userId}/edits/selfpr", PostSelfPR).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", DeleteTodo).Methods("DELETE", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos", PostTodos).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/todos/tech", DeleteTech).Methods("DELETE", "OPTIONS")
@@ -84,8 +86,8 @@ func SignUp(w http.ResponseWriter, r *http.Request) {
     if error != nil {
         w.Write([]byte("json decode error" + error.Error() + "\n"))
     }
-	status := modules.CreateUser(sign_up.LoginId, sign_up.Password, sign_up.UserType)
-	res, _ := json.Marshal(status)
+	response := modules.CreateUser(sign_up.LoginId, sign_up.Password, sign_up.UserType)
+	res, _ := json.Marshal(response)
 	w.Write(res)
 }
 
@@ -329,6 +331,31 @@ func PostCareer(w http.ResponseWriter, r *http.Request) {
 	id := mux.Vars(r)
 	user_id, _ := strconv.Atoi(id["userId"])
 	response := modules.PostCareer(user_id, career)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func GetSelfPR(w http.ResponseWriter, r *http.Request) {
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.GetSelfPR(user_id)
+	w.Header().Set("Content-Type", "application/json")
+	res, _ := json.Marshal(response)
+	w.Write(res)
+}
+
+func PostSelfPR(w http.ResponseWriter, r *http.Request) {
+	decoder := json.NewDecoder(r.Body)
+    var selfpr modules.SelfPR
+    error := decoder.Decode(&selfpr)
+    if error != nil {
+        w.Write([]byte("json decode error" + error.Error() + "\n"))
+    }
+    fmt.Println(selfpr)
+	id := mux.Vars(r)
+	user_id, _ := strconv.Atoi(id["userId"])
+	response := modules.PostSelfPR(user_id, selfpr.Selfpr)
 	w.Header().Set("Content-Type", "application/json")
 	res, _ := json.Marshal(response)
 	w.Write(res)

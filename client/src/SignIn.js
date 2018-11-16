@@ -19,6 +19,7 @@ export default class SignIn extends Component {
 			loginId: '',
 			password: '',
 			userType: '',
+			correct: true,
 		}
 	}
 	handleChange = name => event => {
@@ -39,7 +40,7 @@ export default class SignIn extends Component {
       .then(results => {
         const message = results.data
         if(message.status === true) this.props.history.push('/'+message.user_type+'/'+message.user_id+'/'+message.furigana)
-        else console.log("error")
+        else this.setState({correct: false})
       })
 	}
 	render() {
@@ -52,7 +53,7 @@ export default class SignIn extends Component {
 	        <Typography component="h1" variant="h5">
 	          Sign in
 	        </Typography>
-	        <form className="sing-in-form" onSubmit={this.onKeyPress}>
+	        <form className="sign-in-form" onSubmit={this.onKeyPress}>
 	          <FormControl margin="normal" required fullWidth>
 	            <InputLabel htmlFor="email">Email Address</InputLabel>
 	            <Input id="email" value={this.state.loginId} onChange={this.handleChange('loginId')} name="email" autoComplete="email" autoFocus />
@@ -68,6 +69,7 @@ export default class SignIn extends Component {
 	              autoComplete="current-password"
 	            />
 	          </FormControl>
+	          <p className="sign-up-form-error">{this.state.correct ? "" : "*メールアドレスまたはパスワードが正しくありません"}</p>
 	          <FormControlLabel
 	            control={<Checkbox value="remember" color="primary" />}
 	            label="Remember me"

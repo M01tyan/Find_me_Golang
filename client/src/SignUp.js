@@ -21,32 +21,39 @@ export default class SignIn extends Component {
 		this.state = {
 			loginId: '',
 			password: '',
+			repassword: '',
 			userType: '',
+			email_correct: true,
+			password_correct: true,
 		}
 	}
 	handleChange = name => event => {
-	  this.setState({[name]: event.target.value});
+	  this.setState({[name]: event.target.value})
 	}
 	onKeyPress = event => {
 		event.preventDefault()
-		
-		axios
-      .post("http://localhost:8000/api/users/signUp", {
-    	  	loginId: this.state.loginId,
-    	  	password: this.state.password,
-    	  	userType: this.state.userType
-    	  }, {
-        headers: { 'Content-Type': 'application/json; charset=utf-8' }
-    	})
-      .then(results => {
-        const message = results.data
-        console.log(message)
-        if(message.status === true) {
-        	this.props.history.push('/'+message.user_type+'/'+message.user_id+'/edits/new')
-        } else {
-        	console.log("error")
-        }
-      })
+		if(this.state.password === this.state.repassword) {
+			axios
+	      .post("http://localhost:8000/api/users/signUp", {
+	    	  	loginId: this.state.loginId,
+	    	  	password: this.state.password,
+	    	  	userType: this.state.userType
+	    	  }, {
+	        headers: { 'Content-Type': 'application/json; charset=utf-8' }
+	    	})
+	      .then(results => {
+	      	this.setState({password_correct: true})
+	        const message = results.data
+	        console.log(message)
+	        if(message.status === true) {
+	        	this.props.history.push('/'+message.user_type+'/'+message.user_id+'/edits/new')
+	        } else {
+	        	this.setState({email_correct: false})
+	        }
+	      })
+		} else {
+			this.setState({password_correct: false})
+		}
 	}
 	render() {
 		return (
@@ -58,27 +65,38 @@ export default class SignIn extends Component {
 	        <Typography component="h1" variant="h5">
 	          Sign up
 	        </Typography>
-	        <form className="sing-in-form" onSubmit={this.onKeyPress}>
+	        <form className="sign-in-form" onSubmit={this.onKeyPress}>
 	          <FormControl margin="normal" required fullWidth>
 	            <InputLabel htmlFor="email">Email Address</InputLabel>
 	            <Input id="email" value={this.state.loginId} onChange={this.handleChange('loginId')} name="email" autoComplete="email" autoFocus />
+	            <p className="sign-up-form-error">{this.state.email_correct ? "" : "*このメールアドレスはすでに登録されています"}</p>
 	          </FormControl>
-	          <FormControl margin="normal" required fullWidth>
-	            <InputLabel htmlFor="password">Password</InputLabel>
+	          <FormControl margin="normal" required fullWidth className="sign-in-form-password">
+	            <InputLabel htmlFor="password" >Password</InputLabel>
 	            <Input
 	              name="password"
 	              type="password"
 	              id="password"
 	              value={this.state.password}
 	              onChange={this.handleChange('password')}
-	              autoComplete="current-password"
 	            />
+	          </FormControl>
+	          <FormControl margin="normal" required fullWidth>
+	            <InputLabel htmlFor="password">Re:Password</InputLabel>
+	            <Input
+	              name="password"
+	              type="password"
+	              id="repassword"
+	              value={this.state.repassword}
+	              onChange={this.handleChange('repassword')}
+	            />
+	            <p className="sign-up-form-error">{this.state.password_correct ? "" : "*パスワードが一致しません"}</p>
 	          </FormControl>
 	          <FormControlLabel
 	            control={<Checkbox value="remember" color="primary" />}
 	            label="Remember me"
 	          />
-	          <FormControl component="fieldset" className="sign-up-user-type">
+	          <FormControl component="fieldset" className="sign-up-user-type" required>
               <FormLabel>User Type</FormLabel>
               <RadioGroup
                 row
