@@ -27,6 +27,7 @@ import Monaca from './images/monaca.jpg'
 import Nifty from './images/mobile_backend.jpeg'
 import Onsen from './images/onsen_ui.png'
 import Js from './images/JavaScript-logo.png'
+import axios from 'axios'
 import './TodoCard.css'
 
 
@@ -36,57 +37,22 @@ export default class TodoCardItems extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      items: [
-        { 
-          title: "会津大学アプリケーション",
-          links: [
-            { 
-              title: "Github",
-              url: "https://github.com/M01tyan/U-Aizu",
-            },
-          ],
-          images: [Aizulogo, Monaca, Nifty, Onsen, Js],
-          detail: "会津大学の施設利用状況を直感的に認識できるアプリケーション",
-          motivation: "現在利用できる教室の利用状況がわかりにくので、スマホでいつでも確認できる物が欲しいと思った",
-          technologies: ["HTML5", "CSS3", "JavaScript", "Monaca", "Nifty Cloud"],
-          period: "3ヶ月",
-          member: "１人",
-          favorite: 0,
-        },
-        { 
-          title: "OGCとのIoTプロジェクト",
-          links: [
-            { 
-              title: "Github",
-              url: "https://github.com/M01tyan/Pepper",
-            },
-          ],
-          images: [Aizulogo, Monaca, Nifty, Onsen, Js],
-          detail: "ロボットのIoT化を促進する活動でMQTTSなどでバックエンド開発を体験することができた。",
-          motivation: "IoTに興味があり、何かIoTに活動を行いたいと思っていた時に大学の課外活動に参加した際にPepperのソフトウェア開発者を探しており、良い機会だと思い参加しました。",
-          technologies: ["Python", "MQTTS", "Pepper", "Choregraphe"],
-          period: "6ヶ月",
-          member: "TIS株式会社、会津大学4名",
-          favorite: 0,
-        },
-        {
-          title: "TechMate ~LINE Bot~",
-          links: [
-            {
-              title: "Github",
-              url: "https://github.com/M01tyan/TechMate/",
-            },
-          ],
-          images: [Aizulogo, Monaca, Nifty, Onsen, Js],
-          detail: "大学内で同じ技術を学びたいと思う仲間を繋げる手助けをするLINE Bot。",
-          motivation: "大学のハッカソンに参加し、普段個人での開発ばかりで大学内にはどんな技術を学んでいる人がいるのかわからず、同じ技術を学びたいと思っていたり、仲間が欲しいと思う人のきっかけづくりを作ってあげたいと思い作成しました。",
-          technologies: ["LINE Messaging API", "Go言語", "PostgreSQL", "Heroku"],
-          period: "4日間",
-          member: "３人",
-          favorite: 0,
-        },
-      ],
+      items: [],
     }
+  }
+  componentDidMount() {
+    const path = window.location.pathname
+    const paths = path.split("/")
+    axios
+      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(results => {
+        const message = results.data
+        this.setState({items: message})
+      })
   }
 
   render() {
@@ -175,8 +141,8 @@ class TodoCard extends Component {
                   onClose={this.handleClose}
                   TransitionComponent={Fade}
                 >
-                  {this.state.item.links.map((link, i) => (
-                    <MenuItem onClick={this.handleClose} key={i}><a href={link.url}>{link.title}</a></MenuItem>
+                  {this.state.item.sites.map((link, i) => (
+                    <MenuItem onClick={this.handleClose} key={i}><a href={link.url}>{link.url_title}</a></MenuItem>
                   ))}
                 </Menu>
               </div>

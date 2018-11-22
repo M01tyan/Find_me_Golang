@@ -11,6 +11,7 @@ import Fade from '@material-ui/core/Fade'
 import Avatar from '@material-ui/core/Avatar'
 import sr from './ScrollReveal'
 import Icon from './images/icon.jpg'
+import axios from 'axios'
 import './BaseInfo.css'
 
 export default class BaseInfo extends Component {
@@ -24,26 +25,43 @@ export default class BaseInfo extends Component {
       easing: 'ease',
     }
     sr.reveal(this.refs.logo, config)
+
+    const path = window.location.pathname
+    const paths = path.split("/")
+    axios
+      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      })
+      .then(results => {
+        const message = results.data
+        this.setState({base: message})
+        axios
+          .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+            headers: {
+              'Content-Type': 'application/json',
+            }
+          })
+          .then(results => {
+            if(String(results.data) !== "") {
+              let img = "data:image/png;base64,"+String(results.data)
+              this.setState({icon: img})
+            } else {
+              console.log("NOT ICON")
+              this.setState({icon: 'https://raw.githubusercontent.com/M01tyan/Find_me_Golang/master/client/src/images/sample_icon.png'})
+            }
+          })
+      })
   }
 
   constructor(props) {
     super(props)
     this.state = {
       anchorEl: null,
-      links: [
-        {
-          title: 'Facebook',
-          link: 'https://www.facebook.com/M01tyan',
-        },
-        {
-          title: 'Github',
-          link: 'https://github.com/M01tyan'
-        },
-        {
-          title: 'Find me!',
-          link: 'https://find-me-site.herokuapp.com/'
-        },
-      ],
+      base: {
+        sites: [],
+      },
     }
   }
 
@@ -62,31 +80,31 @@ export default class BaseInfo extends Component {
       <div className="base-info">
     		<Card className="base-info-card">
           <CardContent>
-            <Avatar src={Icon} className="base-info-user-icon" refs="logo"/>
+            <Avatar src={this.state.icon} className="base-info-user-icon" refs="logo"/>
           </CardContent>
         	<div className="base-info-card-base">
             <CardContent>
             	<div className="base-info-card-content">
                 <div className="base-info-university">
                   <Typography color="textSecondary" className="base-info-university-name">
-                  	{this.props.university}
+                  	{this.state.base.university}
                   </Typography>
                   <Typography color="textSecondary">
-                    {this.props.department}
+                    {this.state.base.department}
                   </Typography>
                   <Typography color="textSecondary">
-                    {this.props.subject}
+                    {this.state.base.subject}
                   </Typography>
                 </div>
                 <div className="base-info-user-name">
                   <Typography color="textSecondary">
-                    {this.props.graduate_year}卒
+                    {this.state.base.graduate}卒
                   </Typography>
                   <Typography variant="headline">
-                    {this.props.name}
+                    {this.state.base.name}
                   </Typography>
                   <Typography color="textSecondary">
-                    {this.props.furigana}
+                    {this.state.base.furigana}
                   </Typography>
                 </div>
                 <br/>
@@ -107,8 +125,8 @@ export default class BaseInfo extends Component {
                 onClose={this.handleClose}
                 TransitionComponent={Fade}
               >
-                {this.state.links.map((link, i) => (
-                  <MenuItem onClick={this.handleClose} key={i}><a href={link.link}>{link.title}</a></MenuItem>
+                {this.state.base.sites.map((link, i) => (
+                  <MenuItem onClick={this.handleClose} key={i}><a href={link.url}>{link.url_title}</a></MenuItem>
                 ))}
               </Menu>
             </CardActions>

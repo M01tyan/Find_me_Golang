@@ -43,11 +43,12 @@ export default class HistoryEdit extends Component {
 	      .then(results => {
 	        let message = results.data
 	        if(message === null) message = []
-			      let histories = this.state.histories
-			      histories.push(this.state.history)
-			      this.setState({histories: histories})
-			      console.log(this.state.histories[this.state.histories.length-1].id)
-			      this.setState({history: {id: this.state.histories[this.state.histories.length-1].id, content: ''}})
+			    let histories = this.state.histories
+			    histories.push(this.state.history)
+			    this.setState({histories: histories})
+			    if(this.state.histories.length > 0){
+			    	this.setState({history: {id: this.state.histories[this.state.histories.length-1].id, content: ''}})
+			    }
 	      })
     } 
 	}
@@ -62,10 +63,12 @@ export default class HistoryEdit extends Component {
       .then(results => {
         let message = results.data
         if(message === null) message = []
+      	if(this.state.histories.length > 0){
+      		let history = this.state.history
+      		history.id = this.state.histories[this.state.histories.length-1].id+1
+      		this.setState({history: history})
+      	}
         this.setState({histories: message})
-      	let history = this.state.history
-      	history.id = this.state.histories[this.state.histories.length-1].id+1
-      	this.setState({history: history})
       })
 	}
 	deleteHistory = i => event => {

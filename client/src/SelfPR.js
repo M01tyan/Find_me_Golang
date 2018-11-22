@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 //import sr from './ScrollReveal'
 import './SelfPR.css'
+import axios from 'axios'
 
 export default class SelfPR extends Component {
   constructor(props) {
