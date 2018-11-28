@@ -178,7 +178,7 @@ div.edit-form-todo-card-tech {
 	background-color: #eee;
 }
 .edit-form-skill-table {
-	min-width: 400px;
+	min-width: 300px;
 }
 td.edit-form-skill-star {
 	padding: 0px;
@@ -196,11 +196,11 @@ button.edit-form-skill-star-button {
 	flex-direction: row;
 }
 th.edit-form-skill-language {
-	width: 20vw;
+	width: 10vw;
 	padding-right: 10px;
 }
 td.edit-form-skill-comment {
-	width: 20vw;
+	width: 10vw;
 	padding-left: 10px;
 }
 div.edit-form-skill-text-field {
