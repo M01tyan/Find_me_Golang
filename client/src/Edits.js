@@ -14,7 +14,6 @@ import CheckIcon from '@material-ui/icons/Check'
 import InputLabel from '@material-ui/core/InputLabel'
 import MenuItem from '@material-ui/core/MenuItem'
 import Select from '@material-ui/core/Select'
-import Sample from './images/sample_icon.png'
 import TodoEdit from './TodoEdit'
 import SkillEdit from './SkillEdit'
 import HistoryEdit from './HistoryEdit'
@@ -207,7 +206,6 @@ class BaseEdit extends Component {
   }
   
   render() {
-    const { icon } = this.state.base
     return (
       <div className="edit">
         <div className="edit-form">

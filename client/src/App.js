@@ -24,8 +24,8 @@ export default class App extends Component {
       <BrowserRouter>
         <div>
           <Header />
-          <Route exact path='/:userType/:userId/:furigana' component={Home} />
-          <Route path='/signIn' component={SignIn} />
+          <Route path='/:userType/:userId/:furigana' component={Home} />
+          <Route exact path='/' component={SignIn} />
           <Route path='/signUp' component={SignUp} />
           <Route path='/:userType/:userId/edits/new' component={Edits} />
           <Route path='/:userType/:userId/:furigana/edits' component={Edits} />

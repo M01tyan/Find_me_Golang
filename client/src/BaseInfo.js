@@ -10,7 +10,6 @@ import Typography from '@material-ui/core/Typography'
 import Fade from '@material-ui/core/Fade'
 import Avatar from '@material-ui/core/Avatar'
 import sr from './ScrollReveal'
-import Icon from './images/icon.jpg'
 import axios from 'axios'
 import './BaseInfo.css'
 

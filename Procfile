@@ -1,0 +1,1 @@
+web: node client/App.js && go run server/main.go
