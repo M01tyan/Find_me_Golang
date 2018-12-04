@@ -80,7 +80,7 @@ type NewUserInfo struct {
 var Db *sql.DB
 
 func OpenDB() (Db *sql.DB){
-    Db, err := sql.Open("postgres", "user=m01tyan password=No.1runner dbname=Find_me sslmode=disable")
+    Db, err := sql.Open("postgres", os.Getenv("DATABASE_URL"))
     if err != nil {
         log.Print(err)
         Db.Close()

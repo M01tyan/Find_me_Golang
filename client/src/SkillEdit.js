@@ -30,7 +30,7 @@ export default class SkillEdit extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
+      .get("https://find-me-apiserver.herokuapp.com/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
         headers: {
           'Content-Type': 'application/json',
       }})
@@ -47,7 +47,7 @@ export default class SkillEdit extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .patch("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
+      .patch("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
       	id: skill.id,
       	language: skill.language,
       	level: skill.level,
@@ -70,7 +70,7 @@ export default class SkillEdit extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
+      .post("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
       	id: new_skill.id,
       	language: new_skill.language,
       	level: new_skill.level,
@@ -137,7 +137,7 @@ class SkillEditItem extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .delete("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
+      .delete("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
       	params: {
       		id: this.state.skill.id
       	}

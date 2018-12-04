@@ -20,7 +20,7 @@ export default class History extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/histories", {
+      .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/histories", {
         headers: {
           'Content-Type': 'application/json',
         }

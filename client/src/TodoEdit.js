@@ -68,7 +68,7 @@ export default class TodoEdit extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
+      .get("https://find-me-apiserver.herokuapp.com/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
         headers: {
           'Content-Type': 'application/json',
       }})
@@ -214,7 +214,7 @@ class TodoEditItem extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .delete("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos/tech", {
+      .delete("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos/tech", {
         params: {
           todo_id: this.state.todo.id,
           id: j+1
@@ -235,7 +235,7 @@ class TodoEditItem extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .delete("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos/site", {
+      .delete("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos/site", {
         params: {
           todo_id: this.state.todo.id,
           id: i+1
@@ -257,7 +257,7 @@ class TodoEditItem extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .delete("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos/image", {
+      .delete("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos/image", {
         params: {
           todo_id: this.state.todo.id,
           id: this.state.delete_i+1
@@ -279,7 +279,7 @@ class TodoEditItem extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
+      .post("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
         id: this.state.todo.id,
         title: this.state.todo.title,
         detail: this.state.todo.detail,
@@ -525,7 +525,7 @@ class DeleteTodo extends Component {
     const paths = path.split("/")
     console.log(this.props.id)
     axios
-      .delete("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos?id="+this.props.id)
+      .delete("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos?id="+this.props.id)
       .then(results => {
         this.setState({ open: false })
         this.props.deleteTodo()

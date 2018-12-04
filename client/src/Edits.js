@@ -144,7 +144,7 @@ class BaseEdit extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+      .post("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
         name: this.state.base.name,
         furigana: this.state.base.furigana,
         university: this.state.base.university,
@@ -162,7 +162,7 @@ class BaseEdit extends Component {
         const message = results.data
         if(message === true) {
           axios
-            .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+            .post("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
               image: this.state.base64icon
             }, {
               headers: {
@@ -180,7 +180,7 @@ class BaseEdit extends Component {
     const path = window.location.pathname
     let paths = path.split("/")
     axios
-      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+      .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
         headers: {
           'Content-Type': 'application/json',
       }})
@@ -189,7 +189,7 @@ class BaseEdit extends Component {
         if(message.sites === null) message.sites = []
         this.setState({ base: message })
         axios
-          .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+          .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
             headers: {
               'Content-Type': 'application/json',
           }})

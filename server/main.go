@@ -55,12 +55,13 @@ func main() {
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", PostIcon).Methods("POST", "OPTIONS")
     r.HandleFunc("/api/users/{userType}/{userId}/edits/icon", GetIcon).Methods("GET")
 
+    port := os.Getenv("PORT")
     routerWithCORS := handlers.CORS(
     	handlers.AllowedMethods([]string{"GET", "POST", "DELETE", "PUT", "PATCH"}),
-    	handlers.AllowedOrigins([]string{"http://localhost:3000"}),
+    	handlers.AllowedOrigins([]string{"*"}),
 		handlers.AllowedHeaders([]string{"Content-Type", "application/json", ""}),
     )(r)
-    log.Fatal(http.ListenAndServe(":8000", routerWithCORS))
+    log.Fatal(http.ListenAndServe(":"+port, routerWithCORS))
 
 }
 

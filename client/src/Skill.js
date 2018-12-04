@@ -21,7 +21,7 @@ export default class Skill extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
+      .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
         headers: {
           'Content-Type': 'application/json',
         }

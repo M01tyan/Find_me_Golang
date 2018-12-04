@@ -34,7 +34,7 @@ export default class SignIn extends Component {
 		event.preventDefault()
 		if(this.state.password === this.state.repassword) {
 			axios
-	      .post("http://localhost:8000/api/users/signUp", {
+	      .post("https://find-me-apiserver.herokuapp.com/api/users/signUp", {
 	    	  	loginId: this.state.loginId,
 	    	  	password: this.state.password,
 	    	  	userType: this.state.userType

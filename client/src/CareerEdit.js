@@ -23,7 +23,7 @@ export default class CareerEdit extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/career", {
+      .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/career", {
         headers: {
           'Content-Type': 'application/json',
       }})
@@ -41,7 +41,7 @@ export default class CareerEdit extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/career", {
+      .post("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/career", {
       	now: this.state.career.now,
       	near: this.state.career.near,
       	future: this.state.career.future

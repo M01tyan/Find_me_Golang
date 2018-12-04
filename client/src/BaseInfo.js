@@ -28,7 +28,7 @@ export default class BaseInfo extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
+      .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/base", {
         headers: {
           'Content-Type': 'application/json',
         }
@@ -37,7 +37,7 @@ export default class BaseInfo extends Component {
         const message = results.data
         this.setState({base: message})
         axios
-          .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
+          .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {
             headers: {
               'Content-Type': 'application/json',
             }
