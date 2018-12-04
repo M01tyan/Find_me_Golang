@@ -43,6 +43,9 @@ export default class SignIn extends Component {
         else this.setState({correct: false})
       })
 	}
+	changeSignUp = () => {
+		//this.props.history.push("/signUp")
+	}
 	render() {
 		return (
 			<div className="sign-in">
@@ -70,10 +73,6 @@ export default class SignIn extends Component {
 	            />
 	          </FormControl>
 	          <p className="sign-up-form-error">{this.state.correct ? "" : "*メールアドレスまたはパスワードが正しくありません"}</p>
-	          <FormControlLabel
-	            control={<Checkbox value="remember" color="primary" />}
-	            label="Remember me"
-	          />
 	          <Button
 	            type="submit"
 	            fullWidth
@@ -83,6 +82,10 @@ export default class SignIn extends Component {
 	            Sign in
 	          </Button>
 	        </form>
+	        <div className="other-login">
+          	<a href="/signUp" className="other-login-item">Sign up</a>
+          	<a href="/signUp" className="other-login-item">Guest</a>
+          </div>
 	      </Paper>
       </div>
 		)

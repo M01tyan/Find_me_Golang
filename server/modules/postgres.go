@@ -40,6 +40,7 @@ type Todo struct {
     Sites        []Sites  `json:"sites"`
     Images       []string `json:"images"`
     ImgNum       int      `json:"img_num"`
+    Liked        int      `json:"liked"`
 }
 
 type Skill struct {
@@ -381,13 +382,13 @@ func GetTodos(user_id int) (todos []Todo) {
     Db := OpenDB()
     // fmt.Print(user_id) 
     // fmt.Println(" GET TODOS USER ID")
-    rows, errs := Db.Query("SELECT id, title, detail, motivation, period, member, img_num FROM Todos WHERE user_id=$1", user_id)
+    rows, errs := Db.Query("SELECT id, title, detail, motivation, period, member, img_num, liked FROM Todos WHERE user_id=$1", user_id)
     if errs != nil {
         log.Println(errs)
     }
     for rows.Next() {
         var todo Todo
-        rows.Scan(&todo.Id, &todo.Title, &todo.Detail, &todo.Motivation, &todo.Period, &todo.Member, &todo.ImgNum)
+        rows.Scan(&todo.Id, &todo.Title, &todo.Detail, &todo.Motivation, &todo.Period, &todo.Member, &todo.ImgNum, &todo.Liked)
         todo.Technologies = GetTodoTech(user_id, todo.Id)
         todo.Sites = GetTodoSites(user_id, todo.Id)
         todo.Images = GetTodoImages(user_id, todo.Id, todo.ImgNum)
@@ -425,7 +426,7 @@ func PostTodos(user_id int, todo Todo) (response bool) {
         id = id +1
         // fmt.Print(id)
         // fmt.Println(" POST TODO ID")
-        _, err = Db.Exec("INSERT INTO Todos (user_id, id, title, detail, motivation, period, member, img_num) VALUES ($1,$2,$3,$4,$5,$6,$7,$8)", user_id, id, todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member, todo.ImgNum)
+        _, err = Db.Exec("INSERT INTO Todos (user_id, id, title, detail, motivation, period, member, img_num, liked) VALUES ($1,$2,$3,$4,$5,$6,$7,$8, 0)", user_id, id, todo.Title, todo.Detail, todo.Motivation, todo.Period, todo.Member, todo.ImgNum)
         if err != nil {
             log.Println(err)
         }

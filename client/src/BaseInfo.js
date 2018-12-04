@@ -35,6 +35,7 @@ export default class BaseInfo extends Component {
       })
       .then(results => {
         const message = results.data
+        if(message.sites === null) message.sites = []
         this.setState({base: message})
         axios
           .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/icon", {

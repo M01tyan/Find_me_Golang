@@ -23,6 +23,7 @@ import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight'
 import SwipeableViews from 'react-swipeable-views'
 import { autoPlay } from 'react-swipeable-views-utils'
 import axios from 'axios'
+import Sample from './images/Find_me_logo.png'
 import './TodoCard.css'
 
 
@@ -46,7 +47,8 @@ export default class TodoCardItems extends Component {
       })
       .then(results => {
         const message = results.data
-        this.setState({items: message})
+        if(message === null) this.setState({items: []})
+        else this.setState({items: message})
       })
   }
 
@@ -73,6 +75,15 @@ class TodoCard extends Component {
       item: this.props.item,
       activeStep: 0,
     }
+  }
+  componentWillMount() {
+    let { item } = this.state
+    if(this.state.item.sites === null) item.sites = []
+    if(this.state.item.images === null) {
+      item.images = []
+      item.images.push(Sample)
+    } 
+    this.setState({item: item})
   }
 
   handleExpandClick = () => {
@@ -115,7 +126,7 @@ class TodoCard extends Component {
     const { anchorEl } = this.state;
     const open = Boolean(anchorEl);
     const { activeStep } = this.state
-    const maxSteps = this.state.item.images.length
+    //const maxSteps = this.state.item.images.length
     return (
       <div className="todo-card">
         <Card className="todo-card-card">
@@ -160,12 +171,12 @@ class TodoCard extends Component {
               ))}
             </AutoPlaySwipeableViews>
             <MobileStepper
-              steps={maxSteps}
+              steps={this.state.item.img_num}
               position="static"
               activeStep={activeStep}
               style={{width: '90%'}}
               nextButton={
-                <Button size="small" onClick={this.handleNext} disabled={activeStep === maxSteps - 1}>
+                <Button size="small" onClick={this.handleNext} disabled={activeStep === this.state.item.img_num - 1}>
                   Next
                   <KeyboardArrowRight />
                 </Button>
@@ -185,7 +196,7 @@ class TodoCard extends Component {
           </CardContent>
           <CardActions className="todo-card-actions" disableActionSpacing>
             <IconButton aria-label="Add to favorites">
-              <Badge badgeContent={this.state.item.favorite} color="primary">
+              <Badge badgeContent={this.state.item.liked} color="primary">
                 <FormControlLabel
                   control={
                     <Checkbox icon={<FavoriteBorder />} checkedIcon={<Favorite />} onClick={this.favoriteAdd} value="checkedH" />

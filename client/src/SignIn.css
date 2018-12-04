@@ -25,7 +25,15 @@ div.sign-in {
 div.sign-in-form-password {
 	margin-top: 0;
 }
-
+.other-login {
+	margin: 10px;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+}
+.other-login-item {
+	margin: 5px;
+}
 
 
 /*Sign Up*/

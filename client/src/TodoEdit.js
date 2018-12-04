@@ -68,14 +68,14 @@ export default class TodoEdit extends Component {
     const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("https://find-me-apiserver.herokuapp.com/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
+      .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/todos", {
         headers: {
           'Content-Type': 'application/json',
       }})
       .then(results => {
         let message = results.data
         if(message === null) message = []
-          console.log(message)
+        console.log(message)
         this.setState({todos: message})
       })
   }

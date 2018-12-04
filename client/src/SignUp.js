@@ -118,6 +118,10 @@ export default class SignIn extends Component {
 	            Sign in
 	          </Button>
 	        </form>
+	        <div className="other-login">
+          	<a href="/" className="other-login-item">Sign In</a>
+          	<a href="/signUp" className="other-login-item">Guest</a>
+          </div>
 	      </Paper>
       </div>
 		)

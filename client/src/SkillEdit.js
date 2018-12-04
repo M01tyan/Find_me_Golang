@@ -30,7 +30,7 @@ export default class SkillEdit extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("https://find-me-apiserver.herokuapp.com/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
+      .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/skills", {
         headers: {
           'Content-Type': 'application/json',
       }})
@@ -83,7 +83,7 @@ export default class SkillEdit extends Component {
 				let skills = this.state.skills
 				skills.push(new_skill)
 				this.setState({new_skill: {id: new_skill.id+1, language: '', level: 0, comment: ''}})
-				this.setState(skills: skills)
+				this.setState({skills: skills})
       })
 	}
   render() {

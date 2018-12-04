@@ -27,7 +27,8 @@ export default class History extends Component {
       })
       .then(results => {
         const message = results.data
-        this.setState({histories: message})
+        if(message === null) this.setState({histories: []})
+        else this.setState({histories: message})
       })
   }
 

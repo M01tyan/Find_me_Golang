@@ -24,11 +24,11 @@ export default class App extends Component {
       <BrowserRouter>
         <div>
           <Header />
-          <Route path='/:userType/:userId/:furigana' component={Home} />
+          <Route exact path='/:userType/:userId/:furigana' component={Home} />
           <Route exact path='/' component={SignIn} />
           <Route path='/signUp' component={SignUp} />
-          <Route path='/:userType/:userId/edits/new' component={Edits} />
-          <Route path='/:userType/:userId/:furigana/edits' component={Edits} />
+          <Route exact path='/:userType/:userId/edits/new' component={Edits} />
+          <Route exact path='/:userType/:userId/:furigana/edits' component={Edits} />
           <Route path='/about' component={About} />
           <Footer />
         </div>
@@ -90,7 +90,7 @@ class Header extends Component {
         </div>
         <a href="/"><img src={Findme} alt="Find_me_logo" className="header-logo" /></a>
         <div className="header-links">
-          <Link to={"/"+paths[1]+"/"+paths[2]+"/"+paths[3]} className="link">Home</Link>
+          <Link to={"/"+paths[1]+"/"+paths[2]+"/"+paths[3]} className="link" style={{marginTop: 18}}>Home</Link>
           <Link to={"/"+paths[1]+"/"+paths[2]+"/"+paths[3]+"/edits"} className="link">編集</Link>
           <Link to="/about" className="link">このサイトについて</Link>
         </div>

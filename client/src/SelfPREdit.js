@@ -19,7 +19,7 @@ export default class SelfPREdit extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .get("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/selfpr", {
+      .get("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/selfpr", {
         headers: {
           'Content-Type': 'application/json',
       }})
@@ -35,7 +35,7 @@ export default class SelfPREdit extends Component {
 		const path = window.location.pathname
     const paths = path.split("/")
     axios
-      .post("http://localhost:8000/api/users/"+paths[1]+"/"+paths[2]+"/edits/selfpr", {
+      .post("https://find-me-apiserver.herokuapp.com/api/users/"+paths[1]+"/"+paths[2]+"/edits/selfpr", {
       	selfpr: this.state.selfpr
       }, {
         headers: {

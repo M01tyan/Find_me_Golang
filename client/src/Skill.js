@@ -28,7 +28,8 @@ export default class Skill extends Component {
       })
       .then(results => {
         const message = results.data
-        this.setState({skills: message})
+        if(message === null) this.setState({skills: []})
+        else this.setState({skills: message})
       })
   }
 
